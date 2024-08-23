@@ -27,8 +27,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        #cache keeps the envroment from redownloading everything
-        cache: 'npm'
       #npm clean install as runing in a test envroment
     - name: Install Frontend Dependacies
       run: npm ci
