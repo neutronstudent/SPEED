@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { firebaseHandler } from "../controller/login";
+
+firebaseHandler.init();
 
 export default function Home() {
   return (
