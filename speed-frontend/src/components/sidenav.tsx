@@ -31,12 +31,25 @@ export default function Sidenav() {
         </ListItem>
         <ListItem>
           <ListItemButton>
+            <ListItemText primary="Submit Article" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem>
+          <ListItemButton>
             <ListItemText primary="Moderation" />
           </ListItemButton>
         </ListItem>
         <ListItem>
           <ListItemButton>
             <ListItemText primary="Analysis" />
+          </ListItemButton>
+        </ListItem>
+      </List>
+      <Divider />
+      <List>
+        <ListItem>
+          <ListItemButton>
+            <ListItemText primary="My Submissions" />
           </ListItemButton>
         </ListItem>
       </List>
