@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signOut, signInWithEmailAndPassword } from 'firebase/auth';
-import { firebaseConfig } from '../../secrets.firebase.js';
+import firebaseConfig from '../secrets/secrets.firebase';
 
 export const firebaseHandler = {
   async init() {
