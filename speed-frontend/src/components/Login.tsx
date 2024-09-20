@@ -4,7 +4,8 @@ import { firebaseHandler, login } from '../controller/login';
 import { useUser } from './UserContext';
 import { useRouter } from 'next/navigation';
 
-const LoginPage: React.FC = () => {
+// Login component that handles user login and redirects to the dashboard
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setUser } = useUser();
@@ -16,6 +17,7 @@ const LoginPage: React.FC = () => {
     firebaseHandler.init();
   }, []);
 
+  // Handles the login process with react context and redirects to the dashboard if successful
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
@@ -43,6 +45,7 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  // Adjusts the return layout for the login page and includes basic css styling
   return (
     <Container 
       maxWidth="sm" 
@@ -90,7 +93,7 @@ const LoginPage: React.FC = () => {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
           </Button>
@@ -100,4 +103,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

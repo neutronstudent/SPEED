@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type UserDocument = HydratedDocument<User>;
-
+// This schema is used to define the structure of the user collection in MongoDB
 @Schema()
 export class User {
   @Prop({ required: true, unique: true })
@@ -15,4 +14,5 @@ export class User {
   role: string;
 }
 
+export type UserDocument = HydratedDocument<User>;
 export const UserSchema = SchemaFactory.createForClass(User);

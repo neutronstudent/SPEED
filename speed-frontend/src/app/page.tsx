@@ -1,10 +1,11 @@
 "use client";
-import LoginPage from '../components/LoginPage';
+import Login from '../components/Login';
 
+// Displays Login component on the page
 const Home: React.FC = () => {
   return (
     <>
-      <LoginPage />
+      <Login />
     </>
   );
 };

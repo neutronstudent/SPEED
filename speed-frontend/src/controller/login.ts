@@ -6,6 +6,7 @@ import firebaseConfig from '../secrets/secrets.firebase';
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// Loads Firebase auth module asynchronously when needed
 export const firebaseHandler = {
   async init() {
     await import('firebase/app');
@@ -13,6 +14,7 @@ export const firebaseHandler = {
   }
 };
 
+// Login function for Firebase authentication
 export const login = async (email: string, password: string) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -23,6 +25,7 @@ export const login = async (email: string, password: string) => {
   }
 };
 
+// Logout function for Firebase authentication
 export const logout = async () => {
   try {
     await signOut(auth);
