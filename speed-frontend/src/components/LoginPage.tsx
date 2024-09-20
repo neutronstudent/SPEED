@@ -25,7 +25,6 @@ const LoginPage: React.FC = () => {
       const user = await login(email, password);
       const uid = user.uid;
 
-      // Fetch user data after login
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${uid}`);
       if (!response.ok) throw new Error('Failed to fetch user data');
 
