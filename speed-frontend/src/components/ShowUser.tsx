@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { User, DefaultEmptyUser } from '../app/Users';
+import { User, DefaultEmptyUser } from './Users';
 import Link from 'next/link';
 
 function ShowUsers() {

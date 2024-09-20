@@ -1,17 +1,13 @@
 "use client";
-import { useState, useEffect } from 'react';
-// Import firebaseHandler if still needed
-// import { firebaseHandler } from "../controller/login";
+import LoginPage from '../components/LoginPage';
+import ShowUsers from '../components/ShowUser';
 
-// Initialize Firebase if needed
-// firebaseHandler.init();
-
-import ShowUsers from "../components/ShowUser";
-
-export default function Home() {
+const Home: React.FC = () => {
   return (
-    <main>
-      <ShowUsers />
-    </main>
+    <>
+      <LoginPage />
+    </>
   );
-}
+};
+
+export default Home;
