@@ -23,4 +23,4 @@ export class Article {
 }
 
 export type ArticleDocument = HydratedDocument<Article>;
-export const UserSchema = SchemaFactory.createForClass(Article);
+export const ArticleSchema = SchemaFactory.createForClass(Article);
