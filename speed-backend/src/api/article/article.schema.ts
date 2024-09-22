@@ -13,7 +13,7 @@ export class Article {
   doi: string;
 
   @Prop({ required: false })
-  moderator: string;
+  moderatorUid: string;
 
   @Prop({ required: false })
   reviewer: string;
