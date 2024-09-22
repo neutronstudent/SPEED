@@ -1,46 +1,63 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/router";
+import { useUser } from "../components/UserContext";
 import {
   Box,
   Drawer,
-  Button,
   List,
   Divider,
   ListItem,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { logout } from "@/controller/login";
 
-//import static user object
-
+/**
+ * Side navigation component that displays the navigation links for the application on the left side of the screen
+ * @returns Side navigation component
+ */
 export default function Sidenav() {
-  const [open, setOpen] = useState(true);
+  const { setUser } = useUser();
+  const router = useRouter();
 
-  const toggleDrawer = (open: boolean) => () => {
-    setOpen(open);
+  // handle navigation to different pages from the side navigation
+  const handleNavigation = (path: string) => {
+    router.push(path);
   };
 
+  // handle logout
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null);
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  // side navigation list
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+    <Box sx={{ width: 250 }} role="presentation">
       <List>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleNavigation("/dashboard")}>
             <ListItemText primary="Home" />
           </ListItemButton>
         </ListItem>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleNavigation("/submit-article")}>
             <ListItemText primary="Submit Article" />
           </ListItemButton>
         </ListItem>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleNavigation("/moderation")}>
             <ListItemText primary="Moderation" />
           </ListItemButton>
         </ListItem>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleNavigation("/analysis")}>
             <ListItemText primary="Analysis" />
           </ListItemButton>
         </ListItem>
@@ -48,7 +65,7 @@ export default function Sidenav() {
       <Divider />
       <List>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleNavigation("/my-submissions")}>
             <ListItemText primary="My Submissions" />
           </ListItemButton>
         </ListItem>
@@ -56,7 +73,7 @@ export default function Sidenav() {
       <Divider />
       <List>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleLogout()}>
             <ListItemText primary="Logout" />
           </ListItemButton>
         </ListItem>
@@ -65,7 +82,7 @@ export default function Sidenav() {
   );
   return (
     <div>
-      <Drawer variant="permanent" open={open} onClose={toggleDrawer(false)}>
+      <Drawer variant="permanent" open={true}>
         {DrawerList}
       </Drawer>
     </div>
