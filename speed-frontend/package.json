@@ -16,7 +16,8 @@
     "firebase": "^10.13.2",
     "next": "^14.2.6",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-pro-sidebar": "^1.1.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
