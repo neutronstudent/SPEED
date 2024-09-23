@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useUser } from "../components/UserContext";
 import {
   Box,
@@ -18,7 +18,7 @@ import { logout } from "@/controller/login";
  * @returns Side navigation component
  */
 export default function Sidenav() {
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
   const router = useRouter();
 
   // handle navigation to different pages from the side navigation
@@ -51,16 +51,20 @@ export default function Sidenav() {
             <ListItemText primary="Submit Article" />
           </ListItemButton>
         </ListItem>
-        <ListItem>
-          <ListItemButton onClick={() => handleNavigation("/moderation")}>
-            <ListItemText primary="Moderation" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem>
-          <ListItemButton onClick={() => handleNavigation("/analysis")}>
-            <ListItemText primary="Analysis" />
-          </ListItemButton>
-        </ListItem>
+        {user?.role === "Moderator" && (
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/moderation")}>
+              <ListItemText primary="Moderation" />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {user?.role === "Analyst" && (
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/analysis")}>
+              <ListItemText primary="Analysis" />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
       <Divider />
       <List>
@@ -73,11 +77,17 @@ export default function Sidenav() {
       <Divider />
       <List>
         <ListItem>
+          <ListItemText style={{ color: "grey" }}>
+            {user && user.email}
+          </ListItemText>
+        </ListItem>
+        <ListItem>
           <ListItemButton onClick={() => handleLogout()}>
             <ListItemText primary="Logout" />
           </ListItemButton>
         </ListItem>
       </List>
+      <Divider />
     </Box>
   );
   return (
