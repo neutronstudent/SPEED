@@ -16,10 +16,15 @@ export class Article {
   moderatorUid: string;
 
   @Prop({ required: false })
-  reviewer: string;
+  reviewerUid: string;
 
   @Prop({ required: true })
   status: string;
+}
+
+export class CreateArticleDto {
+    title: string
+    doi: string
 }
 
 export type ArticleDocument = HydratedDocument<Article>;

@@ -3,6 +3,8 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { Article } from './article.schema';
 
+
+
 @Injectable()
 export class ArticleService {
     constructor(@InjectModel(Article.name) private articleModel: Model<Article>) {}
@@ -37,4 +39,11 @@ export class ArticleService {
     {
         return await this.articleModel.find({moderatorUid: uid});
     }
+
+    async searchForReviewer(uid: string): Promise<Article[]>
+    {
+        return await this.articleModel.find({reviewerUid: uid});
+    }
+
+
 }
