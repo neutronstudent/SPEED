@@ -1,4 +1,4 @@
-const firebaseConfig = {
+export const firebaseConfig = {
     authDomain: "speed-3941f.firebaseapp.com",
     projectId: "speed-3941f",
     storageBucket: "speed-3941f.appspot.com",
