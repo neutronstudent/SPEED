@@ -28,23 +28,23 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
       env: # Or as an environment variable
-        super_secret: ${{ secrets.FIREBASE_KEY }}
+        FIREBASE_KEY: ${{ secrets.FIREBASE_KEY }}
       #npm clean install as runing in a test envroment
     - name: Install Frontend Dependacies
       run: npm ci
       working-directory: ./speed-backend
       env: # Or as an environment variable
-        super_secret: ${{ secrets.FIREBASE_KEY }}
+        FIREBASE_KEY: ${{ secrets.FIREBASE_KEY }}
 
       
     - name: Build Frontend
       working-directory: ./speed-backend
       run: npm run build --if-present
       env: # Or as an environment variable
-        super_secret: ${{ secrets.FIREBASE_KEY }}
+        FIREBASE_KEY: ${{ secrets.FIREBASE_KEY }}
 
     - name: Test Frontend
       run: npm test
       working-directory: ./speed-backend
       env: # Or as an environment variable
-        super_secret: ${{ secrets.FIREBASE_KEY }}
+        FIREBASE_KEY: ${{ secrets.FIREBASE_KEY }}
