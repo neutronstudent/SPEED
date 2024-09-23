@@ -126,11 +126,8 @@ export class ArticleController {
   async createArticle(@Body() articleDto: CreateArticleDto)
   {
     try {
-      var article = new Article();
-
+      var article = Object.assign(new Article(), articleDto);
       article.uid = randomUUID();
-      article.doi = articleDto.doi;
-      article.title = articleDto.title;
       article.status = "new";
 
       return this.articleService.addArticle(article);
