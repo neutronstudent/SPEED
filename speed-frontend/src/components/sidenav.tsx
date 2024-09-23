@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "../components/UserContext";
+import { useUser } from "./UserContext";
 import {
   Box,
   Drawer,
@@ -14,7 +14,7 @@ import {
 import { logout } from "@/controller/login";
 
 /**
- * Side navigation component that displays the navigation links for the application on the left side of the screen
+ * Side navigation component that displays the  navigation links for the application on the left side of the screen
  * @returns Side navigation component
  */
 export default function Sidenav() {
