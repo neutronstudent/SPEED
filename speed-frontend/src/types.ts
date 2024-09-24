@@ -11,4 +11,5 @@ export interface Article {
   SEP?: string;
   claim?: string;
   result?: string;
+  submitterUid: string;
 }

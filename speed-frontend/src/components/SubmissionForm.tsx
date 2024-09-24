@@ -1,12 +1,14 @@
 import { Article } from "@/types";
 import { TextField, Button, Divider } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useUser } from "./UserContext";
 
 interface SubmissionFormProps {
   article?: Article;
 }
 
 export default function SubmissionForm({ article }: SubmissionFormProps) {
+  const { user } = useUser();
   const [formData, setFormData] = useState<Article>({
     id: "",
     uid: "",
@@ -20,6 +22,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     SEP: "",
     claim: "",
     result: "",
+    submitterUid: "",
   });
 
   // Populate the form with the article data if it exists
@@ -40,6 +43,14 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
+    setFormData({
+      ...formData,
+      submitterUid: user.uid,
+    });
     try {
       const response = await fetch(
         article
