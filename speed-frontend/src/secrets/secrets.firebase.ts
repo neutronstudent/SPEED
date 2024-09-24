@@ -1,5 +1,5 @@
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_KEY,
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_KEY,
     authDomain: "speed-app-e3cc6.firebaseapp.com",
     projectId: "speed-app-e3cc6",
     storageBucket: "speed-app-e3cc6.appspot.com",

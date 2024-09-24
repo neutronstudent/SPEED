@@ -27,10 +27,10 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
 
   // Populate the form with the article data if it exists
   useEffect(() => {
-    if (article) {
+    if (article && user && article.submitterUid === user.uid) {
       setFormData(article);
     }
-  }, [article]);
+  }, [article, user]);
 
   // Handle form input changes
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,103 +77,107 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
   return (
     <div>
       <h1>{article ? "Edit Article" : "Submission Form"}</h1>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-      >
-        <TextField
-          id="title"
-          name="title"
-          label="Submission Title"
-          variant="outlined"
-          required
-          value={formData.title}
-          onChange={handleChange}
-        />
-        <TextField
-          id="authors"
-          name="authors"
-          label="Authors"
-          variant="outlined"
-          required
-          value={formData.authors}
-          onChange={handleChange}
-        />
-        <TextField
-          id="journalName"
-          name="journalName"
-          label="Journal Name"
-          variant="outlined"
-          required
-          value={formData.journalName}
-          onChange={handleChange}
-        />
-        <TextField
-          id="yearOfPub"
-          name="yearOfPub"
-          label="Year of Publication"
-          type="number"
-          variant="outlined"
-          required
-          value={formData.yearOfPub}
-          onChange={handleChange}
-        />
-        <TextField
-          id="vol"
-          name="vol"
-          label="Volume Number"
-          type="number"
-          variant="outlined"
-          value={formData.vol}
-          onChange={handleChange}
-        />
-        <TextField
-          id="pages"
-          name="pages"
-          label="Pages"
-          type="number"
-          variant="outlined"
-          value={formData.pages}
-          onChange={handleChange}
-        />
-        <TextField
-          id="doi"
-          name="doi"
-          label="DOI"
-          variant="outlined"
-          value={formData.doi}
-          onChange={handleChange}
-        />
-        <Divider />
-        <TextField
-          id="SEP"
-          name="SEP"
-          label="Software Engineering Practice"
-          variant="outlined"
-          value={formData.SEP}
-          onChange={handleChange}
-        />
-        <TextField
-          id="claim"
-          name="claim"
-          label="Claim"
-          variant="outlined"
-          value={formData.claim}
-          onChange={handleChange}
-        />
-        <TextField
-          id="result"
-          name="result"
-          label="Evidence Result"
-          variant="outlined"
-          value={formData.result}
-          onChange={handleChange}
-        />
-        <Divider />
-        <Button variant="contained" type="submit">
-          {article ? "Update Article" : "Submit Article"}
-        </Button>
-      </form>
+      {!user ? (
+        <p>Please log in to submit an article</p>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+        >
+          <TextField
+            id="title"
+            name="title"
+            label="Submission Title"
+            variant="outlined"
+            required
+            value={formData.title}
+            onChange={handleChange}
+          />
+          <TextField
+            id="authors"
+            name="authors"
+            label="Authors"
+            variant="outlined"
+            required
+            value={formData.authors}
+            onChange={handleChange}
+          />
+          <TextField
+            id="journalName"
+            name="journalName"
+            label="Journal Name"
+            variant="outlined"
+            required
+            value={formData.journalName}
+            onChange={handleChange}
+          />
+          <TextField
+            id="yearOfPub"
+            name="yearOfPub"
+            label="Year of Publication"
+            type="number"
+            variant="outlined"
+            required
+            value={formData.yearOfPub}
+            onChange={handleChange}
+          />
+          <TextField
+            id="vol"
+            name="vol"
+            label="Volume Number"
+            type="number"
+            variant="outlined"
+            value={formData.vol}
+            onChange={handleChange}
+          />
+          <TextField
+            id="pages"
+            name="pages"
+            label="Pages"
+            type="number"
+            variant="outlined"
+            value={formData.pages}
+            onChange={handleChange}
+          />
+          <TextField
+            id="doi"
+            name="doi"
+            label="DOI"
+            variant="outlined"
+            value={formData.doi}
+            onChange={handleChange}
+          />
+          <Divider />
+          <TextField
+            id="SEP"
+            name="SEP"
+            label="Software Engineering Practice"
+            variant="outlined"
+            value={formData.SEP}
+            onChange={handleChange}
+          />
+          <TextField
+            id="claim"
+            name="claim"
+            label="Claim"
+            variant="outlined"
+            value={formData.claim}
+            onChange={handleChange}
+          />
+          <TextField
+            id="result"
+            name="result"
+            label="Evidence Result"
+            variant="outlined"
+            value={formData.result}
+            onChange={handleChange}
+          />
+          <Divider />
+          <Button variant="contained" type="submit">
+            {article ? "Update Article" : "Submit Article"}
+          </Button>
+        </form>
+      )}
     </div>
   );
 }
