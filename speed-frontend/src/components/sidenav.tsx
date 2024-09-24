@@ -1,3 +1,4 @@
+// sidenav.tsx
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -10,23 +11,32 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { logout } from "@/controller/login";
 
+interface SidenavProps {
+  mobileOpen: boolean;
+  handleDrawerToggle: () => void;
+}
+
+const drawerWidth = 240;
+
 /**
- * Side navigation component that displays the  navigation links for the application on the left side of the screen
+ * Side navigation component that displays the navigation links for the application on the left side of the screen
  * @returns Side navigation component
  */
-export default function Sidenav() {
+const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => {
   const { user, setUser } = useUser();
   const router = useRouter();
 
-  // handle navigation to different pages from the side navigation
   const handleNavigation = (path: string) => {
     router.push(path);
+    handleDrawerToggle(); // Close drawer after navigation
   };
 
-  // handle logout
+  // Handle logout
   const handleLogout = async () => {
     try {
       await logout();
@@ -37,9 +47,9 @@ export default function Sidenav() {
     }
   };
 
-  // side navigation list
+  // Side navigation list
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation">
+    <Box sx={{ width: drawerWidth }} role="presentation">
       <List>
         <ListItem>
           <ListItemButton onClick={() => handleNavigation("/dashboard")}>
@@ -82,7 +92,7 @@ export default function Sidenav() {
           </ListItemText>
         </ListItem>
         <ListItem>
-          <ListItemButton onClick={() => handleLogout()}>
+          <ListItemButton onClick={handleLogout}>
             <ListItemText primary="Logout" />
           </ListItemButton>
         </ListItem>
@@ -90,11 +100,26 @@ export default function Sidenav() {
       <Divider />
     </Box>
   );
+
   return (
-    <div>
-      <Drawer variant="permanent" open={true}>
-        {DrawerList}
-      </Drawer>
-    </div>
+    <Drawer
+      variant="temporary"
+      open={mobileOpen}
+      onClose={handleDrawerToggle}
+      ModalProps={{
+        keepMounted: true,
+      }}
+      sx={{
+        '& .MuiDrawer-paper': {
+          boxSizing: 'border-box',
+          width: drawerWidth,
+          top: '64px', // Adjust this to match the AppBar height
+        },
+      }}
+    >
+      {DrawerList}
+    </Drawer>
   );
-}
+};
+
+export default Sidenav;

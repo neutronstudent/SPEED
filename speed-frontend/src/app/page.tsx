@@ -6,7 +6,7 @@ import Login from '../components/Login';
 const Home: React.FC = () => {
   return (
     <>
-      <SubmissionForm />
+      <Login />
     </>
   );
 };
