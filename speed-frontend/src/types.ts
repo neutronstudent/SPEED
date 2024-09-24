@@ -1,5 +1,6 @@
 export interface Article {
   id: string;
+  uid?: string;
   title: string;
   authors: string;
   journalName: string;
