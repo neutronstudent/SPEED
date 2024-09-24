@@ -13,8 +13,9 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^6.1.1",
+    "dotenv": "^16.4.5",
     "firebase": "^10.13.2",
-    "next": "^14.2.6",
+    "next": "^14.2.13",
     "react": "^18",
     "react-dom": "^18",
     "react-pro-sidebar": "^1.1.0"
