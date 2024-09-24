@@ -46,11 +46,13 @@ export default function Sidenav() {
             <ListItemText primary="Home" />
           </ListItemButton>
         </ListItem>
-        <ListItem>
-          <ListItemButton onClick={() => handleNavigation("/submit-article")}>
-            <ListItemText primary="Submit Article" />
-          </ListItemButton>
-        </ListItem>
+        {user?.role !== undefined && (
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/submit-article")}>
+              <ListItemText primary="Submit Article" />
+            </ListItemButton>
+          </ListItem>
+        )}
         {user?.role === "Moderator" && (
           <ListItem>
             <ListItemButton onClick={() => handleNavigation("/moderation")}>
@@ -67,26 +69,32 @@ export default function Sidenav() {
         )}
       </List>
       <Divider />
-      <List>
-        <ListItem>
-          <ListItemButton onClick={() => handleNavigation("/my-submissions")}>
-            <ListItemText primary="My Submissions" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem>
-          <ListItemText style={{ color: "grey" }}>
-            {user && user.email}
-          </ListItemText>
-        </ListItem>
-        <ListItem>
-          <ListItemButton onClick={() => handleLogout()}>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </ListItem>
-      </List>
+      {user?.role !== undefined && (
+        <>
+          <List>
+            <ListItem>
+              <ListItemButton
+                onClick={() => handleNavigation("/my-submissions")}
+              >
+                <ListItemText primary="My Submissions" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+        </>
+      )}
+      {user && (
+        <List>
+          <ListItem>
+            <ListItemText style={{ color: "grey" }}>{user.email}</ListItemText>
+          </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => handleLogout()}>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      )}
       <Divider />
     </Box>
   );
