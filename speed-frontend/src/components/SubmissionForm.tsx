@@ -1,39 +1,71 @@
+import { Article } from "@/types";
 import { TextField, Button, Divider } from "@mui/material";
+import { useEffect, useState } from "react";
 
-export default function SubmissionForm() {
+interface SubmissionFormProps {
+  article?: Article;
+}
+
+export default function SubmissionForm({ article }: SubmissionFormProps) {
+  const [formData, setFormData] = useState<Article>({
+    id: "",
+    uid: "",
+    title: "",
+    authors: "",
+    journalName: "",
+    yearOfPub: 0,
+    vol: 0,
+    pages: 0,
+    doi: "",
+    SEP: "",
+    claim: "",
+    result: "",
+  });
+
+  // Populate the form with the article data if it exists
+  useEffect(() => {
+    if (article) {
+      setFormData(article);
+    }
+  }, [article]);
+
+  // Handle form input changes
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const submissionData = Object.fromEntries(formData.entries());
-    // Send submissionData to the backend
-    console.table(submissionData);
-
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles`,
+        article
+          ? `${process.env.NEXT_PUBLIC_API_URL}/articles/${article.id}`
+          : `${process.env.NEXT_PUBLIC_API_URL}/articles`,
         {
-          method: "POST",
+          method: article ? "PUT" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(submissionData),
+          body: JSON.stringify(formData),
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to submit article");
-      } else {
+      if (response.ok) {
         console.log("Article submitted successfully");
+      } else {
+        console.error("Failed to submit article");
       }
     } catch (error) {
-      console.error("Error submitting article:", error);
+      console.error("Failed to submit article", error);
     }
   };
 
   return (
     <div>
-      <h1>Submission Form</h1>
+      <h1>{article ? "Edit Article" : "Submission Form"}</h1>
       <form
         onSubmit={handleSubmit}
         style={{ display: "flex", flexDirection: "column", gap: "16px" }}
@@ -44,6 +76,8 @@ export default function SubmissionForm() {
           label="Submission Title"
           variant="outlined"
           required
+          value={formData.title}
+          onChange={handleChange}
         />
         <TextField
           id="authors"
@@ -51,6 +85,8 @@ export default function SubmissionForm() {
           label="Authors"
           variant="outlined"
           required
+          value={formData.authors}
+          onChange={handleChange}
         />
         <TextField
           id="journalName"
@@ -58,6 +94,8 @@ export default function SubmissionForm() {
           label="Journal Name"
           variant="outlined"
           required
+          value={formData.journalName}
+          onChange={handleChange}
         />
         <TextField
           id="yearOfPub"
@@ -66,6 +104,8 @@ export default function SubmissionForm() {
           type="number"
           variant="outlined"
           required
+          value={formData.yearOfPub}
+          onChange={handleChange}
         />
         <TextField
           id="vol"
@@ -73,6 +113,8 @@ export default function SubmissionForm() {
           label="Volume Number"
           type="number"
           variant="outlined"
+          value={formData.vol}
+          onChange={handleChange}
         />
         <TextField
           id="pages"
@@ -80,25 +122,45 @@ export default function SubmissionForm() {
           label="Pages"
           type="number"
           variant="outlined"
+          value={formData.pages}
+          onChange={handleChange}
         />
-        <TextField id="doi" name="doi" label="DOI" variant="outlined" />
+        <TextField
+          id="doi"
+          name="doi"
+          label="DOI"
+          variant="outlined"
+          value={formData.doi}
+          onChange={handleChange}
+        />
         <Divider />
         <TextField
           id="SEP"
           name="SEP"
           label="Software Engineering Practice"
           variant="outlined"
+          value={formData.SEP}
+          onChange={handleChange}
         />
-        <TextField id="claim" name="claim" label="Claim" variant="outlined" />
+        <TextField
+          id="claim"
+          name="claim"
+          label="Claim"
+          variant="outlined"
+          value={formData.claim}
+          onChange={handleChange}
+        />
         <TextField
           id="result"
           name="result"
           label="Evidence Result"
           variant="outlined"
+          value={formData.result}
+          onChange={handleChange}
         />
         <Divider />
         <Button variant="contained" type="submit">
-          Submit
+          {article ? "Update Article" : "Submit Article"}
         </Button>
       </form>
     </div>
