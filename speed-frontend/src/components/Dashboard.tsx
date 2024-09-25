@@ -3,7 +3,7 @@ import { useUser } from '../components/UserContext';
 import { logout } from '../controller/login';
 import { useRouter } from 'next/navigation';
 import Sidenav from './sidenav';
-import SearchAppBar from './topnav';
+import TopNavBar from './topnav';
 import { Box, CssBaseline, Typography, Button } from '@mui/material';
 
 const drawerWidth = 240;
@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <SearchAppBar handleDrawerToggle={handleDrawerToggle} />
+      <TopNavBar handleDrawerToggle={handleDrawerToggle} />
       <Sidenav mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
       <Box
         component="main"
