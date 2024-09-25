@@ -36,10 +36,10 @@ const Dashboard: React.FC = () => {
       <div className='content'>
         <Routes>
           {/* <Route path='/search-page' element={<SearchPage />} /> */}
-          <Route path='/submit-article' element={<SubmissionPage />} />
+          {/* <Route path='/submit-article' element={<SubmissionPage />} />
           <Route path='/moderation' element={<Moderation />} />
           <Route path='/analysis' element={<Analysis />} />
-          <Route path='/my-submissions' element={<MySubmissions />} />
+          <Route path='/my-submissions' element={<MySubmissions />} /> */}
         </Routes>
         <Button onClick={handleLogout}>Logout</Button>
       </div>
