@@ -80,26 +80,32 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         )}
       </List>
       <Divider />
-      <List>
-        <ListItem>
-          <ListItemButton onClick={() => handleNavigation("/my-submissions")}>
-            <ListItemText primary="My Submissions" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem>
-          <ListItemText style={{ color: "grey" }}>
-            {user && user.email}
-          </ListItemText>
-        </ListItem>
-        <ListItem>
-          <ListItemButton onClick={handleLogout}>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </ListItem>
-      </List>
+      {user?.role !== undefined && (
+        <>
+          <List>
+            <ListItem>
+              <ListItemButton
+                onClick={() => handleNavigation("/my-submissions")}
+              >
+                <ListItemText primary="My Submissions" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+        </>
+      )}
+      {user && (
+        <List>
+          <ListItem>
+            <ListItemText style={{ color: "grey" }}>{user.email}</ListItemText>
+          </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => handleLogout()}>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      )}
       <Divider />
     </Box>
   );
