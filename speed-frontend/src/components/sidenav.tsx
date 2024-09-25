@@ -56,11 +56,13 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
             <ListItemText primary="Home" />
           </ListItemButton>
         </ListItem>
-        <ListItem>
-          <ListItemButton onClick={() => handleNavigation("/submit-article")}>
-            <ListItemText primary="Submit Article" />
-          </ListItemButton>
-        </ListItem>
+        {user?.role !== undefined && (
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/submit-article")}>
+              <ListItemText primary="Submit Article" />
+            </ListItemButton>
+          </ListItem>
+        )}
         {user?.role === "Moderator" && (
           <ListItem>
             <ListItemButton onClick={() => handleNavigation("/moderation")}>
