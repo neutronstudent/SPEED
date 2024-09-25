@@ -12,4 +12,5 @@ export interface Article {
   claim?: string;
   result?: string;
   submitterUid: string;
+  status: string;
 }

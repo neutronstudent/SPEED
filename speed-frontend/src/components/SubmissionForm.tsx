@@ -23,6 +23,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     claim: "",
     result: "",
     submitterUid: "",
+    status: "",
   });
 
   // Populate the form with the article data if it exists

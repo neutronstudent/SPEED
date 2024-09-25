@@ -41,6 +41,9 @@ export class Article {
 
   @Prop({ required: true })
   status: string;
+  
+  @Prop({ required: true })
+  submitterUid: string;
 }
 
 export class CreateArticleDto {
@@ -54,6 +57,8 @@ export class CreateArticleDto {
   SEP: string;
   claim: string;
   result: string;
+  status: string;
+  submitterUid: string;
 }
 export type ArticleDocument = HydratedDocument<Article>;
 export const ArticleSchema = SchemaFactory.createForClass(Article);

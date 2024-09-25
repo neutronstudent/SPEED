@@ -86,7 +86,7 @@ const Sidenav: React.FC<SidenavProps> = ({
         <>
           <List>
             <ListItem>
-              <ListItemButton onClick={() => handleNavigation("/submissions")}>
+              <ListItemButton onClick={() => handleNavigation("/my-submissions")}>
                 <ListItemText primary="My Submissions" />
               </ListItemButton>
             </ListItem>
