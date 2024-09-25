@@ -122,7 +122,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         '& .MuiDrawer-paper': {
           boxSizing: 'border-box',
           width: drawerWidth,
-          top: '64px', // Adjust this to match the AppBar height
+          top: '64px',
         },
       }}
     >
