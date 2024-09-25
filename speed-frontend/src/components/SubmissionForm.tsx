@@ -2,6 +2,7 @@ import { Article } from "@/types";
 import { TextField, Button, Divider, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
+import { useRouter } from "next/navigation";
 
 interface SubmissionFormProps {
   article?: Article;
@@ -9,6 +10,7 @@ interface SubmissionFormProps {
 
 export default function SubmissionForm({ article }: SubmissionFormProps) {
   const { user } = useUser();
+  const router = useRouter();
   const [formData, setFormData] = useState<Article>({
     id: "",
     uid: "",
@@ -64,6 +66,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
       );
       if (response.ok) {
         console.log("Article submitted successfully");
+        router.push("/submission-success");
       } else {
         console.error("Failed to submit article");
       }
