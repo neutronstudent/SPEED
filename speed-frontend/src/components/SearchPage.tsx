@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Typography } from '@mui/material';
 
-const drawerWidth = 240; // Space reserved for the sidenav
-const topNavHeight = 64; // Height of the top navigation bar
+const drawerWidth = 0; // Space reserved for the sidenav
+const topNavHeight = 0; // Height of the top navigation bar
 
 const SearchPage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
