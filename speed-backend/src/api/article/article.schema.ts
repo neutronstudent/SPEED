@@ -9,7 +9,7 @@ export class Article {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   doi: string;
 
   @Prop({required: false})
