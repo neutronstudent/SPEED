@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
 import { logout } from '../controller/login';
 import { useRouter } from 'next/navigation';
 import Sidenav from './sidenav';
-import SearchAppBar from './topnav';
+import TopNavBar from './topnav';
 import { Box, CssBaseline, Typography, Button } from '@mui/material';
 
 const drawerWidth = 240;
@@ -30,35 +31,18 @@ const Dashboard: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <SearchAppBar handleDrawerToggle={handleDrawerToggle} />
+      <TopNavBar handleDrawerToggle={handleDrawerToggle} />
       <Sidenav mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          mt: 8,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Dashboard
-        </Typography>
-        {user ? (
-          <Box>
-            <Typography variant="h6">User Details</Typography>
-            <Typography>UID: {user.uid}</Typography>
-            <Typography>Email: {user.email}</Typography>
-            <Typography>Role: {user.role}</Typography>
-            <Button variant="contained" color="primary" onClick={handleLogout}>
-              Logout
-            </Button>
-          </Box>
-        ) : (
-          <Typography>No user information available.</Typography>
-        )}
-      </Box>
+      <div className='content'>
+        <Routes>
+          {/* <Route path='/search-page' element={<SearchPage />} /> */}
+          {/* <Route path='/submit-article' element={<SubmissionPage />} />
+          <Route path='/moderation' element={<Moderation />} />
+          <Route path='/analysis' element={<Analysis />} />
+          <Route path='/my-submissions' element={<MySubmissions />} /> */}
+        </Routes>
+        <Button onClick={handleLogout}>Logout</Button>
+      </div>
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 // sidenav.tsx
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "./UserContext";
 import {
@@ -17,8 +17,8 @@ import {
 import { logout } from "@/controller/login";
 
 interface SidenavProps {
-  mobileOpen: boolean;
-  handleDrawerToggle: () => void;
+  mobileOpen?: boolean;
+  handleDrawerToggle?: () => void;
 }
 
 const drawerWidth = 240;
@@ -27,13 +27,14 @@ const drawerWidth = 240;
  * Side navigation component that displays the navigation links for the application on the left side of the screen
  * @returns Side navigation component
  */
-const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => {
+const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => { 
   const { user, setUser } = useUser();
   const router = useRouter();
 
   const handleNavigation = (path: string) => {
     router.push(path);
-    handleDrawerToggle(); // Close drawer after navigation
+    if(handleDrawerToggle)
+    handleDrawerToggle(); 
   };
 
   // Handle logout
@@ -79,26 +80,32 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         )}
       </List>
       <Divider />
-      <List>
-        <ListItem>
-          <ListItemButton onClick={() => handleNavigation("/my-submissions")}>
-            <ListItemText primary="My Submissions" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem>
-          <ListItemText style={{ color: "grey" }}>
-            {user && user.email}
-          </ListItemText>
-        </ListItem>
-        <ListItem>
-          <ListItemButton onClick={handleLogout}>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </ListItem>
-      </List>
+      {user?.role !== undefined && (
+        <>
+          <List>
+            <ListItem>
+              <ListItemButton
+                onClick={() => handleNavigation("/my-submissions")}
+              >
+                <ListItemText primary="My Submissions" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+        </>
+      )}
+      {user && (
+        <List>
+          <ListItem>
+            <ListItemText style={{ color: "grey" }}>{user.email}</ListItemText>
+          </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => handleLogout()}>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      )}
       <Divider />
     </Box>
   );
@@ -106,7 +113,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
   return (
     <Drawer
       variant="temporary"
-      open={mobileOpen}
+      open={mobileOpen != undefined ? mobileOpen : true}
       onClose={handleDrawerToggle}
       ModalProps={{
         keepMounted: true,
