@@ -16,8 +16,6 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     authors: "",
     journalName: "",
     yearOfPub: 0,
-    vol: 0,
-    pages: 0,
     doi: "",
     SEP: "",
     claim: "",
@@ -54,8 +52,8 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     try {
       const response = await fetch(
         article
-          ? `${process.env.NEXT_PUBLIC_API_URL}/articles/${article.id}`
-          : `${process.env.NEXT_PUBLIC_API_URL}/articles`,
+          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${article.id}`
+          : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles`,
         {
           method: article ? "PUT" : "POST",
           headers: {
@@ -76,7 +74,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
 
   return (
     <div>
-      <h1>{article ? "Edit Article" : "Submission Form"}</h1>
+      <h1>{article ? "Edit Submission" : "Submission Form"}</h1>
       {!user ? (
         <p>Please log in to submit an article</p>
       ) : (
@@ -174,7 +172,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
           />
           <Divider />
           <Button variant="contained" type="submit">
-            {article ? "Update Article" : "Submit Article"}
+            {article ? "Update Submission" : "Submit Article"}
           </Button>
         </form>
       )}
