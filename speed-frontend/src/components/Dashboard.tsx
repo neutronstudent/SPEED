@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useUser } from '../components/UserContext';
 import { logout } from '../controller/login';
 import { useRouter } from 'next/navigation';
+import Sidenav from './sidenav';
+import TopNavBar from './topnav';
+import { Box, CssBaseline, Typography, Button } from '@mui/material';
 
-// Dashboard component that displays user details and logout button, extracting user and setUser from context
+const drawerWidth = 240;
+
 const Dashboard: React.FC = () => {
-  const { user, setUser } = useUser(); // Extract user and setUser from context
+  const { user, setUser } = useUser();
   const router = useRouter();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Logout function which calls the logout function from the login controller, clears user context, and redirects to login page
   const handleLogout = async () => {
     try {
       await logout();
@@ -19,22 +23,43 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Adjusts the return layout for the dashboard page and includes basic css styling
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   return (
-    <div>
-      <h1>Dashboard</h1>
-      {user ? (
-        <div>
-          <h2>User Details</h2>
-          <p>UID: {user.uid}</p>
-          <p>Email: {user.email}</p>
-          <p>Role: {user.role}</p>
-          <button onClick={handleLogout}>Logout</button> {}
-        </div>
-      ) : (
-        <p>No user information available.</p>
-      )}
-    </div>
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <TopNavBar handleDrawerToggle={handleDrawerToggle} />
+      <Sidenav mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+          mt: 8,
+        }}
+      >
+        <Typography variant="h4" gutterBottom>
+          Dashboard
+        </Typography>
+        {user ? (
+          <Box>
+            <Typography variant="h6">User Details</Typography>
+            <Typography>UID: {user.uid}</Typography>
+            <Typography>Email: {user.email}</Typography>
+            <Typography>Role: {user.role}</Typography>
+            <Button variant="contained" color="primary" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Box>
+        ) : (
+          <Typography>No user information available.</Typography>
+        )}
+      </Box>
+    </Box>
   );
 };
 

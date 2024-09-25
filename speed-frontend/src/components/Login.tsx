@@ -22,24 +22,38 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+  
     try {
       const user = await login(email, password);
       const uid = user.uid;
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${uid}`);
-      if (!response.ok) throw new Error('Failed to fetch user data');
-
-      const userData = await response.json();
+  
+      const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${uid}`;
+      console.log('Fetching user data from:', apiUrl);
+  
+      const response = await fetch(apiUrl);
+  
+      console.log('Response status:', response.status);
+  
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+  
+      if (!response.ok) throw new Error(`Failed to fetch user data: ${response.status}`);
+  
+      // Try parsing the JSON
+      let userData;
+      try {
+        userData = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('Error parsing JSON:', parseError);
+        throw new Error('Failed to parse user data');
+      }
+  
       setUser(userData);
-
+  
       router.push('/dashboard');
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An unknown error occurred');
-      }
+      console.error('Login error:', err);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
