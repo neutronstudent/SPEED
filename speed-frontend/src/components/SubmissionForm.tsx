@@ -79,6 +79,8 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     <Box
       component="div"
       sx={{
+        display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         margin: "0 auto",
