@@ -43,6 +43,12 @@ export class ArticleService {
   }
 
   async searchForSubmitter(uid: string): Promise<Article[]> {
-    return await this.articleModel.find({ submitterUid: uid }).exec();
+    return await this.articleModel.find({ submitterUid: uid });
+  }
+
+  async updateArticle(uid: string, updatedArticle: Article): Promise<Article> {
+    return await this.articleModel.findOneAndUpdate({ uid }, updatedArticle, {
+      new: true,
+    });
   }
 }

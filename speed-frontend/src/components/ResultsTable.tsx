@@ -11,9 +11,10 @@ import {
 
 interface ResultsTableProps {
   articles: Article[];
+  onClick?: (uid: string) => void;
 }
 
-const ResultsTable = ({ articles }: ResultsTableProps) => {
+const ResultsTable = ({ articles, onClick }: ResultsTableProps) => {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -29,7 +30,12 @@ const ResultsTable = ({ articles }: ResultsTableProps) => {
         <TableBody>
           {articles.length > 0 ? (
             articles.map((article) => (
-              <TableRow key={article.uid}>
+              <TableRow
+                onClick={() => {
+                  onClick && onClick(article.uid || "");
+                }}
+                key={article.uid}
+              >
                 <TableCell align="center">{article.title}</TableCell>
                 <TableCell align="center">{article.doi || "N/A"}</TableCell>
                 <TableCell align="center">

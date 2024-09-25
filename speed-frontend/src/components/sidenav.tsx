@@ -61,7 +61,7 @@ const Sidenav: React.FC<SidenavProps> = ({
         </ListItem>
         {user?.role !== undefined && (
           <ListItem>
-            <ListItemButton onClick={() => handleNavigation("/submit")}>
+            <ListItemButton onClick={() => router.push("/submit?uid=new")}>
               <ListItemText primary="Submit Article" />
             </ListItemButton>
           </ListItem>

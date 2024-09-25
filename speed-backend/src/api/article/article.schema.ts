@@ -9,28 +9,31 @@ export class Article {
   @Prop({ required: true })
   title: string;
 
+  @Prop({ required: true })
+  authors: string;
+
   @Prop({ required: false })
   doi: string;
 
-  @Prop({required: false})
-  journalName: string
+  @Prop({ required: false })
+  journalName: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   yearOfPub: Date;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   vol: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   pages: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   SEP: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   claim: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   result: string;
 
   @Prop({ required: false })
@@ -41,7 +44,7 @@ export class Article {
 
   @Prop({ required: true })
   status: string;
-  
+
   @Prop({ required: true })
   submitterUid: string;
 }
@@ -49,7 +52,7 @@ export class Article {
 export class CreateArticleDto {
   title: string;
   doi: string;
-  authors: string[];
+  authors: string;
   journalName: string;
   yearOfPub: Date;
   vol: string;

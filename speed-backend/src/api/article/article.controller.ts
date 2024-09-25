@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
@@ -142,6 +143,26 @@ export class ArticleController {
         {
           status: HttpStatus.NOT_ACCEPTABLE,
           error: 'Unable to add article',
+        },
+        HttpStatus.NOT_ACCEPTABLE,
+        { cause: error },
+      );
+    }
+  }
+
+  @Put('/id/:uid')
+  async updateArticle(
+    @Param('uid') uid: string,
+    @Body() articleDto: CreateArticleDto,
+  ) {
+    try {
+      const article = Object.assign(new Article(), articleDto);
+      return this.articleService.updateArticle(uid, article);
+    } catch {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_ACCEPTABLE,
+          error: 'Unable to update article',
         },
         HttpStatus.NOT_ACCEPTABLE,
         { cause: error },

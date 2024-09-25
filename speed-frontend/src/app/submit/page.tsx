@@ -1,9 +1,17 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import SubmissionForm from "@/components/SubmissionForm";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const SubmissionPage: React.FC = () => {
-  return <SubmissionForm />;
+  const searchParams = useSearchParams();
+  const uid = searchParams.get("uid");
+
+  useEffect(() => {
+    console.log("UID:", uid);
+  }, [uid]);
+
+  return <SubmissionForm article={uid as string} />;
 };
 
 export default SubmissionPage;

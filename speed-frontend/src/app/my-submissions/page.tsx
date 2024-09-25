@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
+import { useRouter } from "next/navigation";
 
 const SubmissionPage: React.FC = () => {
   const { user } = useUser();
+  const router = useRouter();
   //   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +27,7 @@ const SubmissionPage: React.FC = () => {
     setError(null);
 
     try {
-    //   const apiUrl = `${backendUrl}/api/articles`;
+      //   const apiUrl = `${backendUrl}/api/articles`;
       const apiUrl = `${backendUrl}/api/articles/submitter/${user?.uid || ""}`;
       const response = await fetch(apiUrl);
 
@@ -42,6 +44,12 @@ const SubmissionPage: React.FC = () => {
     }
   };
 
+  const handleEdit = (uid: string) => {
+    // Redirect to edit page
+    console.log("Edit article with uid:", uid);
+    router.push(`/submit?uid=${uid}`);
+  };
+
   return (
     <Box
       component="main"
@@ -55,26 +63,6 @@ const SubmissionPage: React.FC = () => {
         My Submissions
       </Typography>
 
-      {/* Search Input and Button */}
-      {/* <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
-        <TextField
-          label="Search"
-          variant="outlined"
-          fullWidth
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSearch}
-          sx={{ ml: 2, height: "56px" }}
-          disabled={loading}
-        >
-          Search
-        </Button>
-      </Box> */}
-
       {/* Show loading state */}
       {loading && <Typography>Loading...</Typography>}
 
@@ -82,7 +70,7 @@ const SubmissionPage: React.FC = () => {
       {error && <Typography color="error">{error}</Typography>}
 
       {/* Table with Search Results */}
-      <ResultsTable articles={searchResults} />
+      <ResultsTable onClick={handleEdit} articles={searchResults} />
     </Box>
   );
 };

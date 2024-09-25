@@ -5,7 +5,7 @@ import { useUser } from "./UserContext";
 import { useRouter } from "next/navigation";
 
 interface SubmissionFormProps {
-  article?: Article;
+  article?: string;
 }
 
 export default function SubmissionForm({ article }: SubmissionFormProps) {
@@ -18,6 +18,8 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     authors: "",
     journalName: "",
     yearOfPub: 0,
+    vol: "",
+    pages: "",
     doi: "",
     SEP: "",
     claim: "",
@@ -26,12 +28,49 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     status: "",
   });
 
+  // function to fetch article data
+  const fetchArticle = async (uid: string) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${uid}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        data.yearOfPub = new Date(data.yearOfPub).getFullYear();
+        setFormData(data as Article);
+      } else {
+        console.error("Failed to fetch article data");
+      }
+    } catch (error) {
+      console.error("Failed to fetch article data", error);
+    }
+  };
+
   // Populate the form with the article data if it exists
   useEffect(() => {
-    if (article && user && article.submitterUid === user.uid) {
-      setFormData(article);
+    if (article) {
+      if (article === "new") {
+        setFormData({
+          id: "",
+          uid: "",
+          title: "",
+          authors: "",
+          journalName: "",
+          yearOfPub: 0,
+          vol: "",
+          pages: "",
+          doi: "",
+          SEP: "",
+          claim: "",
+          result: "",
+          submitterUid: "",
+          status: "",
+        });
+        return;
+      }
+      fetchArticle(article);
     }
-  }, [article, user]);
+  }, [article]);
 
   // Handle form input changes
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,10 +94,10 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     try {
       const response = await fetch(
         article
-          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${article.id}`
+          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${formData.uid}`
           : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles`,
         {
-          method: article ? "PUT" : "POST",
+          method: article !== "new" ? "PUT" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
@@ -88,7 +127,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
         width: "100%",
       }}
     >
-      <h1>{article ? "Edit Submission" : "Submission Form"}</h1>
+      <h1>{article !== "new" ? "Edit Submission" : "Submission Form"}</h1>
       {!user ? (
         <p>Please log in to submit an article</p>
       ) : (
@@ -203,7 +242,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
           />
           <Divider />
           <Button variant="contained" type="submit">
-            {article ? "Update Submission" : "Submit Article"}
+            {article !== "new" ? "Update Submission" : "Submit Article"}
           </Button>
         </Box>
       )}
