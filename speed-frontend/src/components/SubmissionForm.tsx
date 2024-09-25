@@ -1,5 +1,5 @@
 import { Article } from "@/types";
-import { TextField, Button, Divider } from "@mui/material";
+import { TextField, Button, Divider, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 
@@ -73,14 +73,31 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
   };
 
   return (
-    <div>
+    <Box
+      component="div"
+      sx={{
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "0 auto",
+        width: "100%",
+      }}
+    >
       <h1>{article ? "Edit Submission" : "Submission Form"}</h1>
       {!user ? (
         <p>Please log in to submit an article</p>
       ) : (
-        <form
+        <Box
+          component="form"
           onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "16px",
+            maxWidth: "800px",
+            margin: "0 auto",
+            width: "100%",
+          }}
         >
           <TextField
             id="title"
@@ -90,6 +107,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             required
             value={formData.title}
             onChange={handleChange}
+            fullWidth
           />
           <TextField
             id="authors"
@@ -97,6 +115,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             label="Authors"
             variant="outlined"
             required
+            fullWidth
             value={formData.authors}
             onChange={handleChange}
           />
@@ -106,6 +125,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             label="Journal Name"
             variant="outlined"
             required
+            fullWidth
             value={formData.journalName}
             onChange={handleChange}
           />
@@ -116,6 +136,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             type="number"
             variant="outlined"
             required
+            fullWidth
             value={formData.yearOfPub}
             onChange={handleChange}
           />
@@ -125,6 +146,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             label="Volume Number"
             type="number"
             variant="outlined"
+            fullWidth
             value={formData.vol}
             onChange={handleChange}
           />
@@ -133,6 +155,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             name="pages"
             label="Pages"
             type="number"
+            fullWidth
             variant="outlined"
             value={formData.pages}
             onChange={handleChange}
@@ -141,6 +164,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             id="doi"
             name="doi"
             label="DOI"
+            fullWidth
             variant="outlined"
             value={formData.doi}
             onChange={handleChange}
@@ -150,6 +174,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             id="SEP"
             name="SEP"
             label="Software Engineering Practice"
+            fullWidth
             variant="outlined"
             value={formData.SEP}
             onChange={handleChange}
@@ -158,6 +183,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             id="claim"
             name="claim"
             label="Claim"
+            fullWidth
             variant="outlined"
             value={formData.claim}
             onChange={handleChange}
@@ -166,6 +192,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             id="result"
             name="result"
             label="Evidence Result"
+            fullWidth
             variant="outlined"
             value={formData.result}
             onChange={handleChange}
@@ -174,8 +201,8 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
           <Button variant="contained" type="submit">
             {article ? "Update Submission" : "Submit Article"}
           </Button>
-        </form>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }

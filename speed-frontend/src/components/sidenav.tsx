@@ -59,7 +59,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         </ListItem>
         {user?.role !== undefined && (
           <ListItem>
-            <ListItemButton onClick={() => handleNavigation("/submit-article")}>
+            <ListItemButton onClick={() => handleNavigation("/submit")}>
               <ListItemText primary="Submit Article" />
             </ListItemButton>
           </ListItem>
@@ -85,7 +85,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
           <List>
             <ListItem>
               <ListItemButton
-                onClick={() => handleNavigation("/my-submissions")}
+                onClick={() => handleNavigation("/submissions")}
               >
                 <ListItemText primary="My Submissions" />
               </ListItemButton>
@@ -112,7 +112,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
 
   return (
     <Drawer
-      variant="temporary"
+      variant="persistent"
       open={mobileOpen != undefined ? mobileOpen : true}
       onClose={handleDrawerToggle}
       ModalProps={{
