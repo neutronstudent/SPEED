@@ -27,14 +27,16 @@ const drawerWidth = 240;
  * Side navigation component that displays the navigation links for the application on the left side of the screen
  * @returns Side navigation component
  */
-const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => { 
+const Sidenav: React.FC<SidenavProps> = ({
+  mobileOpen,
+  handleDrawerToggle,
+}) => {
   const { user, setUser } = useUser();
   const router = useRouter();
 
   const handleNavigation = (path: string) => {
     router.push(path);
-    if(handleDrawerToggle)
-    handleDrawerToggle(); 
+    if (handleDrawerToggle) handleDrawerToggle();
   };
 
   // Handle logout
@@ -84,9 +86,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         <>
           <List>
             <ListItem>
-              <ListItemButton
-                onClick={() => handleNavigation("/submissions")}
-              >
+              <ListItemButton onClick={() => handleNavigation("/submissions")}>
                 <ListItemText primary="My Submissions" />
               </ListItemButton>
             </ListItem>
@@ -94,7 +94,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
           <Divider />
         </>
       )}
-      {user && (
+      {user ? (
         <List>
           <ListItem>
             <ListItemText style={{ color: "grey" }}>{user.email}</ListItemText>
@@ -102,6 +102,19 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
           <ListItem>
             <ListItemButton onClick={() => handleLogout()}>
               <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      ) : (
+        <List>
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/login")}>
+              <ListItemText primary="Login" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/register")}>
+              <ListItemText primary="Register" />
             </ListItemButton>
           </ListItem>
         </List>
@@ -119,10 +132,10 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         keepMounted: true,
       }}
       sx={{
-        '& .MuiDrawer-paper': {
-          boxSizing: 'border-box',
+        "& .MuiDrawer-paper": {
+          boxSizing: "border-box",
           width: drawerWidth,
-          top: '64px', // Adjust this to match the AppBar height
+          top: "64px", // Adjust this to match the AppBar height
         },
       }}
     >
