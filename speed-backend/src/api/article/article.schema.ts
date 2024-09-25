@@ -16,22 +16,22 @@ export class Article {
   journalName: string
 
   @Prop({required: false})
-  yearOfPub: Date
+  yearOfPub: Date;
 
   @Prop({required: false})
-  vol: Number
+  vol: string;
 
   @Prop({required: false})
-  pages: Number
+  pages: string;
 
   @Prop({required: false})
-  SEP: string
+  SEP: string;
 
   @Prop({required: false})
-  claim: string
+  claim: string;
 
   @Prop({required: false})
-  result: string
+  result: string;
 
   @Prop({ required: false })
   moderatorUid: string;
@@ -49,8 +49,8 @@ export class CreateArticleDto {
   authors: string[];
   journalName: string;
   yearOfPub: Date;
-  vol: Number;
-  pages: Number;
+  vol: string;
+  pages: string;
   SEP: string;
   claim: string;
   result: string;

@@ -112,11 +112,6 @@ const Sidenav: React.FC<SidenavProps> = ({
               <ListItemText primary="Login" />
             </ListItemButton>
           </ListItem>
-          <ListItem>
-            <ListItemButton onClick={() => handleNavigation("/register")}>
-              <ListItemText primary="Register" />
-            </ListItemButton>
-          </ListItem>
         </List>
       )}
       <Divider />
@@ -135,7 +130,7 @@ const Sidenav: React.FC<SidenavProps> = ({
         "& .MuiDrawer-paper": {
           boxSizing: "border-box",
           width: drawerWidth,
-          top: '64px',
+          top: "64px",
         },
       }}
     >

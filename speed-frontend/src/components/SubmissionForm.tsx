@@ -149,7 +149,6 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             id="vol"
             name="vol"
             label="Volume Number"
-            type="number"
             variant="outlined"
             fullWidth
             value={formData.vol}
@@ -159,7 +158,6 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             id="pages"
             name="pages"
             label="Pages"
-            type="number"
             fullWidth
             variant="outlined"
             value={formData.pages}
