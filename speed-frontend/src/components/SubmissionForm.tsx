@@ -1,106 +1,181 @@
+import { Article } from "@/types";
 import { TextField, Button, Divider } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useUser } from "./UserContext";
 
-export default function SubmissionForm() {
+interface SubmissionFormProps {
+  article?: Article;
+}
+
+export default function SubmissionForm({ article }: SubmissionFormProps) {
+  const { user } = useUser();
+  const [formData, setFormData] = useState<Article>({
+    id: "",
+    uid: "",
+    title: "",
+    authors: "",
+    journalName: "",
+    yearOfPub: 0,
+    doi: "",
+    SEP: "",
+    claim: "",
+    result: "",
+    submitterUid: "",
+  });
+
+  // Populate the form with the article data if it exists
+  useEffect(() => {
+    if (article && user && article.submitterUid === user.uid) {
+      setFormData(article);
+    }
+  }, [article, user]);
+
+  // Handle form input changes
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const submissionData = Object.fromEntries(formData.entries());
-    // Send submissionData to the backend
-    console.table(submissionData);
-
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
+    setFormData({
+      ...formData,
+      submitterUid: user.uid,
+    });
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles`,
+        article
+          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${article.id}`
+          : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles`,
         {
-          method: "POST",
+          method: article ? "PUT" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(submissionData),
+          body: JSON.stringify(formData),
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to submit article");
-      } else {
+      if (response.ok) {
         console.log("Article submitted successfully");
+      } else {
+        console.error("Failed to submit article");
       }
     } catch (error) {
-      console.error("Error submitting article:", error);
+      console.error("Failed to submit article", error);
     }
   };
 
   return (
     <div>
-      <h1>Submission Form</h1>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-      >
-        <TextField
-          id="title"
-          name="title"
-          label="Submission Title"
-          variant="outlined"
-          required
-        />
-        <TextField
-          id="authors"
-          name="authors"
-          label="Authors"
-          variant="outlined"
-          required
-        />
-        <TextField
-          id="journalName"
-          name="journalName"
-          label="Journal Name"
-          variant="outlined"
-          required
-        />
-        <TextField
-          id="yearOfPub"
-          name="yearOfPub"
-          label="Year of Publication"
-          type="number"
-          variant="outlined"
-          required
-        />
-        <TextField
-          id="vol"
-          name="vol"
-          label="Volume Number"
-          type="number"
-          variant="outlined"
-        />
-        <TextField
-          id="pages"
-          name="pages"
-          label="Pages"
-          type="number"
-          variant="outlined"
-        />
-        <TextField id="doi" name="doi" label="DOI" variant="outlined" />
-        <Divider />
-        <TextField
-          id="SEP"
-          name="SEP"
-          label="Software Engineering Practice"
-          variant="outlined"
-        />
-        <TextField id="claim" name="claim" label="Claim" variant="outlined" />
-        <TextField
-          id="result"
-          name="result"
-          label="Evidence Result"
-          variant="outlined"
-        />
-        <Divider />
-        <Button variant="contained" type="submit">
-          Submit
-        </Button>
-      </form>
+      <h1>{article ? "Edit Submission" : "Submission Form"}</h1>
+      {!user ? (
+        <p>Please log in to submit an article</p>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+        >
+          <TextField
+            id="title"
+            name="title"
+            label="Submission Title"
+            variant="outlined"
+            required
+            value={formData.title}
+            onChange={handleChange}
+          />
+          <TextField
+            id="authors"
+            name="authors"
+            label="Authors"
+            variant="outlined"
+            required
+            value={formData.authors}
+            onChange={handleChange}
+          />
+          <TextField
+            id="journalName"
+            name="journalName"
+            label="Journal Name"
+            variant="outlined"
+            required
+            value={formData.journalName}
+            onChange={handleChange}
+          />
+          <TextField
+            id="yearOfPub"
+            name="yearOfPub"
+            label="Year of Publication"
+            type="number"
+            variant="outlined"
+            required
+            value={formData.yearOfPub}
+            onChange={handleChange}
+          />
+          <TextField
+            id="vol"
+            name="vol"
+            label="Volume Number"
+            type="number"
+            variant="outlined"
+            value={formData.vol}
+            onChange={handleChange}
+          />
+          <TextField
+            id="pages"
+            name="pages"
+            label="Pages"
+            type="number"
+            variant="outlined"
+            value={formData.pages}
+            onChange={handleChange}
+          />
+          <TextField
+            id="doi"
+            name="doi"
+            label="DOI"
+            variant="outlined"
+            value={formData.doi}
+            onChange={handleChange}
+          />
+          <Divider />
+          <TextField
+            id="SEP"
+            name="SEP"
+            label="Software Engineering Practice"
+            variant="outlined"
+            value={formData.SEP}
+            onChange={handleChange}
+          />
+          <TextField
+            id="claim"
+            name="claim"
+            label="Claim"
+            variant="outlined"
+            value={formData.claim}
+            onChange={handleChange}
+          />
+          <TextField
+            id="result"
+            name="result"
+            label="Evidence Result"
+            variant="outlined"
+            value={formData.result}
+            onChange={handleChange}
+          />
+          <Divider />
+          <Button variant="contained" type="submit">
+            {article ? "Update Submission" : "Submit Article"}
+          </Button>
+        </form>
+      )}
     </div>
   );
 }
