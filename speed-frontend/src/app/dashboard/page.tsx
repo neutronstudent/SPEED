@@ -1,11 +1,15 @@
 "use client";
-import Dashboard from "@/components/Dashboard";
-import React from "react";
+
+import React from 'react';
+import Dashboard from '../../components/Dashboard';
+import Sidenav from '@/components/sidenav';
+import SearchPage from '@/components/SearchPage';
 
 // Displays Dashboard component on the page
 const DashboardPage: React.FC = () => {
-  // test dashboard
-  return <Dashboard />;
+  return (
+    <SearchPage />
+  );
 };
 
 export default DashboardPage;

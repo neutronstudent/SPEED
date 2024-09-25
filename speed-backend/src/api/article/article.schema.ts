@@ -44,17 +44,18 @@ export class Article {
 }
 
 export class CreateArticleDto {
-    title: string
-    doi: string
-    authors: string[]
-    journalName: string
-    yearOfPub: Date
-    vol: Number
-    pages: Number
-    SEP: string
-    claim: string
-    result: string
+  title: string;
+  doi: string;
+  authors: string[];
+  journalName: string;
+  yearOfPub: Date;
+  vol: Number;
+  pages: Number;
+  SEP: string;
+  claim: string;
+  result: string;
 }
-
 export type ArticleDocument = HydratedDocument<Article>;
 export const ArticleSchema = SchemaFactory.createForClass(Article);
+
+ArticleSchema.index({ title: 'text', claim: 'text', result: 'text' });
