@@ -1,8 +1,13 @@
 "use client";
 import React, { Suspense, useEffect, useState } from "react";
-import SubmissionForm from "@/components/SubmissionForm";
+// import SubmissionForm from "@/components/SubmissionForm";
 import { useSearchParams } from "next/navigation";
 import { Typography } from "@mui/material";
+import dynamic from "next/dynamic";
+
+const SubmissionForm = dynamic(() => import("@/components/SubmissionForm"), {
+  ssr: false,
+});
 
 const SubmissionPage: React.FC = () => {
   const searchParams = useSearchParams();
