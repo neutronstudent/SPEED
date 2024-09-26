@@ -70,7 +70,11 @@ const SubmissionPage: React.FC = () => {
       {error && <Typography color="error">{error}</Typography>}
 
       {/* Table with Search Results */}
-      <ResultsTable onClick={handleEdit} articles={searchResults} />
+      <ResultsTable
+        statusColomn={true}
+        onClick={handleEdit}
+        articles={searchResults}
+      />
     </Box>
   );
 };

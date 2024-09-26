@@ -11,10 +11,15 @@ import {
 
 interface ResultsTableProps {
   articles: Article[];
+  statusColomn?: boolean;
   onClick?: (uid: string) => void;
 }
 
-const ResultsTable = ({ articles, onClick }: ResultsTableProps) => {
+const ResultsTable = ({
+  articles,
+  statusColomn,
+  onClick,
+}: ResultsTableProps) => {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -24,7 +29,7 @@ const ResultsTable = ({ articles, onClick }: ResultsTableProps) => {
             <TableCell align="center">DOI</TableCell>
             <TableCell align="center">Journal Name</TableCell>
             <TableCell align="center">Year of Publication</TableCell>
-            <TableCell align="center">Status</TableCell>
+            {statusColomn && <TableCell align="center">Status</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -46,7 +51,9 @@ const ResultsTable = ({ articles, onClick }: ResultsTableProps) => {
                     ? new Date(article.yearOfPub).getFullYear()
                     : "N/A"}
                 </TableCell>
-                <TableCell align="center">{article.status}</TableCell>
+                {statusColomn && (
+                  <TableCell align="center">{article.status}</TableCell>
+                )}
               </TableRow>
             ))
           ) : (
