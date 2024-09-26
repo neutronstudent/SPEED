@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { Article } from './article.schema';
+import { Article, ArticleState } from './article.schema';
 
 
 
@@ -21,9 +21,9 @@ export class ArticleService {
         return await this.articleModel.findOne({uid}).exec();
     }
     
-    async searchForText(searchText: string): Promise<Article[]> {
+    async searchArticles(searchText: string, status: ArticleState): Promise<Article[]> {
         
-        const query = {$text: {$search: searchText}};
+        const query = {$text: {$search: searchText}, status};
 
         const sort = { score: { $meta: "textScore" } };
 
@@ -40,9 +40,13 @@ export class ArticleService {
         return await this.articleModel.find({moderatorUid: uid});
     }
 
-    async searchForReviewer(uid: string): Promise<Article[]>
+    async searchForAnalysist(uid: string): Promise<Article[]>
     {
-        return await this.articleModel.find({reviewerUid: uid});
+        return await this.articleModel.find({analyistUid: uid});
+    }
+
+    async updateObject(uid: string, newData){
+        return await this.articleModel.updateOne({uid}, newData)
     }
 
 
