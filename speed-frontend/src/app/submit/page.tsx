@@ -1,7 +1,7 @@
 "use client";
 import React, { Suspense, useEffect, useState } from "react";
 import SubmissionForm from "@/components/SubmissionForm";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Typography } from "@mui/material";
 
 const SubmissionPage: React.FC = () => {
@@ -13,9 +13,16 @@ const SubmissionPage: React.FC = () => {
   }, [uid]);
 
   return (
-    <Suspense fallback={<Typography>Loading...</Typography>}>
-      <SubmissionForm article={uid as string} />
-    </Suspense>
+    <div>
+      <Typography variant="h4" gutterBottom>
+        Edit Submission
+      </Typography>
+      {uid ? (
+        <SubmissionForm article={uid as string} />
+      ) : (
+        <Typography>No UID provided</Typography>
+      )}
+    </div>
   );
 };
 
