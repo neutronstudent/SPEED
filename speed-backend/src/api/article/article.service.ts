@@ -55,7 +55,7 @@ export class ArticleService {
     }
 
     async deleteArticle(uid: string){
-        return await this.articleModel.deleteOne({uid});
+        await this.articleModel.deleteOne({uid});
     }
 
 
