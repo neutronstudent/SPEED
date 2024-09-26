@@ -9,9 +9,14 @@ const SubmissionForm = dynamic(() => import("@/components/SubmissionForm"), {
   ssr: false,
 });
 
-const SubmissionPage: React.FC = () => {
+function getUid() {
   const searchParams = useSearchParams();
-  const uid = searchParams.get("uid");
+  return searchParams.get("uid");
+}
+
+const SubmissionPage: React.FC = () => {
+  
+  const uid = getUid();
 
   useEffect(() => {
     console.log("UID:", uid);
