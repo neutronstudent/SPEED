@@ -27,14 +27,16 @@ const drawerWidth = 240;
  * Side navigation component that displays the navigation links for the application on the left side of the screen
  * @returns Side navigation component
  */
-const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => { 
+const Sidenav: React.FC<SidenavProps> = ({
+  mobileOpen,
+  handleDrawerToggle,
+}) => {
   const { user, setUser } = useUser();
   const router = useRouter();
 
   const handleNavigation = (path: string) => {
     router.push(path);
-    if(handleDrawerToggle)
-    handleDrawerToggle(); 
+    if (handleDrawerToggle) handleDrawerToggle();
   };
 
   // Handle logout
@@ -59,7 +61,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         </ListItem>
         {user?.role !== undefined && (
           <ListItem>
-            <ListItemButton onClick={() => handleNavigation("/submit-article")}>
+            <ListItemButton onClick={() => router.push("/submit?uid=new")}>
               <ListItemText primary="Submit Article" />
             </ListItemButton>
           </ListItem>
@@ -84,9 +86,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
         <>
           <List>
             <ListItem>
-              <ListItemButton
-                onClick={() => handleNavigation("/my-submissions")}
-              >
+              <ListItemButton onClick={() => handleNavigation("/my-submissions")}>
                 <ListItemText primary="My Submissions" />
               </ListItemButton>
             </ListItem>
@@ -94,7 +94,7 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
           <Divider />
         </>
       )}
-      {user && (
+      {user ? (
         <List>
           <ListItem>
             <ListItemText style={{ color: "grey" }}>{user.email}</ListItemText>
@@ -105,6 +105,14 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
             </ListItemButton>
           </ListItem>
         </List>
+      ) : (
+        <List>
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/login")}>
+              <ListItemText primary="Login" />
+            </ListItemButton>
+          </ListItem>
+        </List>
       )}
       <Divider />
     </Box>
@@ -112,17 +120,17 @@ const Sidenav: React.FC<SidenavProps> = ({ mobileOpen, handleDrawerToggle }) => 
 
   return (
     <Drawer
-      variant="temporary"
+      variant="persistent"
       open={mobileOpen != undefined ? mobileOpen : true}
       onClose={handleDrawerToggle}
       ModalProps={{
         keepMounted: true,
       }}
       sx={{
-        '& .MuiDrawer-paper': {
-          boxSizing: 'border-box',
+        "& .MuiDrawer-paper": {
+          boxSizing: "border-box",
           width: drawerWidth,
-          top: '64px',
+          top: "64px",
         },
       }}
     >
