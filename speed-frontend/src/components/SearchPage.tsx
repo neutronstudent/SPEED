@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Typography } from '@mui/material';
+import ResultsTable from './ResultsTable';
 
-const drawerWidth = 240; // Space reserved for the sidenav
-const topNavHeight = 64; // Height of the top navigation bar
+const drawerWidth = 0; // Space reserved for the sidenav
+const topNavHeight = 0; // Height of the top navigation bar
 
 const SearchPage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -76,40 +77,7 @@ const SearchPage: React.FC = () => {
         {error && <Typography color="error">{error}</Typography>}
   
         {/* Table with Search Results */}
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Title</TableCell>
-                <TableCell align="center">DOI</TableCell>
-                <TableCell align="center">Journal Name</TableCell>
-                <TableCell align="center">Year of Publication</TableCell>
-                <TableCell align="center">Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {searchResults.length > 0 ? (
-                searchResults.map((article) => (
-                  <TableRow key={article.uid}>
-                    <TableCell align="center">{article.title}</TableCell>
-                    <TableCell align="center">{article.doi || 'N/A'}</TableCell>
-                    <TableCell align="center">{article.journalName || 'N/A'}</TableCell>
-                    <TableCell align="center">
-                      {article.yearOfPub ? new Date(article.yearOfPub).getFullYear() : 'N/A'}
-                    </TableCell>
-                    <TableCell align="center">{article.status}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell align="center" colSpan={5}>
-                    No results found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <ResultsTable articles={searchResults} />
       </Box>
     );
   };

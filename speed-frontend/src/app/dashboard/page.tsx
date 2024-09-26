@@ -1,4 +1,5 @@
 "use client";
+
 import React from 'react';
 import Dashboard from '../../components/Dashboard';
 import Sidenav from '@/components/sidenav';

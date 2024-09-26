@@ -18,31 +18,32 @@ export class Article {
   title: string;
 
   @Prop({ required: true })
-  submitterUid: string;
+
+  authors: string;
 
   @Prop({ required: false })
   doi: string;
 
-  @Prop({required: false})
-  journalName: string
+  @Prop({ required: false })
+  journalName: string;
 
-  @Prop({required: false})
-  yearOfPub: Date
+  @Prop({ required: false })
+  yearOfPub: Date;
 
-  @Prop({required: false})
-  vol: Number
+  @Prop({ required: false })
+  vol: string;
 
-  @Prop({required: false})
-  pages: Number
+  @Prop({ required: false })
+  pages: string;
 
-  @Prop({required: false})
-  SEP: string
+  @Prop({ required: false })
+  SEP: string;
 
-  @Prop({required: false})
-  claim: string
+  @Prop({ required: false })
+  claim: string;
 
-  @Prop({required: false})
-  result: string
+  @Prop({ required: false })
+  result: string;
 
   @Prop({ required: false })
   moderatorUid: string;
@@ -52,20 +53,24 @@ export class Article {
 
   @Prop({type: String, enum: ArticleState, default: ArticleState.NEW, required: true })
   status: ArticleState;
+
+  @Prop({ required: true })
+  submitterUid: string;
 }
 
 export class CreateArticleDto {
   title: string;
   doi: string;
-  authors: string[];
+  authors: string;
   journalName: string;
   yearOfPub: Date;
-  vol: Number;
-  pages: Number;
-  submitterUid: string;
+  vol: string;
+  pages: string;
   SEP: string;
   claim: string;
   result: string;
+  status: string;
+  submitterUid: string;
 }
 
 export class ArticlePatchDto {
@@ -76,3 +81,5 @@ export class ArticlePatchDto {
 
 export type ArticleDocument = HydratedDocument<Article>;
 export const ArticleSchema = SchemaFactory.createForClass(Article);
+
+ArticleSchema.index({ title: 'text', claim: 'text', result: 'text' });

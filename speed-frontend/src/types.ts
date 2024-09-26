@@ -5,11 +5,12 @@ export interface Article {
   authors: string;
   journalName: string;
   yearOfPub: number;
-  vol?: number;
-  pages?: number;
+  vol?: string;
+  pages?: string;
   doi?: string;
   SEP?: string;
   claim?: string;
   result?: string;
   submitterUid: string;
+  status: string;
 }

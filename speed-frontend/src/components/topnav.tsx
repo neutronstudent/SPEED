@@ -10,7 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface TopBarProps {
-    handleDrawerToggle: () => void;
+    handleDrawerToggle?: () => void;
   }
 
   const TopNavBar: React.FC<TopBarProps> = ({ handleDrawerToggle }) => {

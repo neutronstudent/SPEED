@@ -7,11 +7,13 @@ import { Article, ArticleState } from './article.schema';
 
 @Injectable()
 export class ArticleService {
-    constructor(@InjectModel(Article.name) private articleModel: Model<Article>) {}
-    
-    async addArticle(newArticle: Article): Promise<Article> {
-        return await this.articleModel.create(newArticle);
-    }
+  constructor(
+    @InjectModel(Article.name) private articleModel: Model<Article>,
+  ) {}
+
+  async addArticle(newArticle: Article): Promise<Article> {
+    return await this.articleModel.create(newArticle);
+  }
 
     async findAll(): Promise<Article[]> {
         return await this.articleModel.find().exec();
@@ -27,27 +29,35 @@ export class ArticleService {
 
         const sort = { score: { $meta: "textScore" } };
 
-        //searches both titles and bodies for releveant text
-        return this.articleModel.find(query).sort(sort).exec();
-    }
+    //searches both titles and bodies for releveant text
+    return this.articleModel.find(query).sort(sort).exec();
+  }
 
-    async searchForStatus(targetStatus: string): Promise<Article[]> {
-        return await this.articleModel.find({status: targetStatus});
-    }
+  async searchForStatus(targetStatus: string): Promise<Article[]> {
+    return await this.articleModel.find({ status: targetStatus });
+  }
 
-    async searchForModerator(uid: string): Promise<Article[]>
-    {
-        return await this.articleModel.find({moderatorUid: uid});
-    }
+  async searchForModerator(uid: string): Promise<Article[]> {
+    return await this.articleModel.find({ moderatorUid: uid });
+  }
 
     async searchForAnalysist(uid: string): Promise<Article[]>
     {
         return await this.articleModel.find({analyistUid: uid});
     }
 
-    async updateObject(uid: string, newData){
-        return await this.articleModel.updateOne({uid}, newData)
+    async searchForSubmitter(uid: string): Promise<Article[]> {
+        return await this.articleModel.find({ submitterUid: uid });
     }
+
+    async updateArticle(uid: string, newData){
+        return await this.articleModel.updateOne({uid}, newData);
+    }
+
+    async deleteArticle(uid: string){
+        return await this.articleModel.deleteOne({uid});
+    }
+
 
 
 }
