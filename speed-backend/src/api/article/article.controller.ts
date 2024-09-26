@@ -9,7 +9,7 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get('/')
-  async findAllMatching(@Query('search') search: string) {
+  async findAllMatching() {
     try {
       return this.articleService.findAll();
     } catch {
