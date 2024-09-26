@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
@@ -15,14 +15,8 @@ const SubmissionPage: React.FC = () => {
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
-  useEffect(() => {
-    if (user) {
-      handleSearch();
-    }
-  }, [user]);
-
   // Function to handle search
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -42,7 +36,13 @@ const SubmissionPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [backendUrl, user?.uid]);
+
+  useEffect(() => {
+    if (user) {
+      handleSearch();
+    }
+  }, [user, handleSearch]);
 
   const handleEdit = (uid: string) => {
     // Redirect to edit page
