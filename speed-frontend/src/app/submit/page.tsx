@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SubmissionForm from "@/components/SubmissionForm";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Typography } from "@mui/material";
 
 const SubmissionPage: React.FC = () => {
   const searchParams = useSearchParams();

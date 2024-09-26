@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -163,6 +164,22 @@ export class ArticleController {
         {
           status: HttpStatus.NOT_ACCEPTABLE,
           error: 'Unable to update article',
+        },
+        HttpStatus.NOT_ACCEPTABLE,
+        { cause: error },
+      );
+    }
+  }
+
+  @Delete('/id/:uid')
+  async deleteArticle(@Param('uid') uid: string) {
+    try {
+      return this.articleService.deleteArticle(uid);
+    } catch {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_ACCEPTABLE,
+          error: 'Unable to delete article',
         },
         HttpStatus.NOT_ACCEPTABLE,
         { cause: error },

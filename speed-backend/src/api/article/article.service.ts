@@ -51,4 +51,8 @@ export class ArticleService {
       new: true,
     });
   }
+
+  async deleteArticle(uid: string): Promise<Article> {
+    return await this.articleModel.findOneAndDelete({ uid });
+  }
 }
