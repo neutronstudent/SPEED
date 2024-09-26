@@ -7,18 +7,21 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Button,
 } from "@mui/material";
 
 interface ResultsTableProps {
   articles: Article[];
-  statusColomn?: boolean;
   onClick?: (uid: string) => void;
+  buttonLabel?: string; 
+  statusColomn?: boolean;
 }
 
 const ResultsTable = ({
   articles,
-  statusColomn,
   onClick,
+  buttonLabel, 
+  statusColomn,
 }: ResultsTableProps) => {
   return (
     <TableContainer component={Paper}>
@@ -30,35 +33,37 @@ const ResultsTable = ({
             <TableCell align="center">Journal Name</TableCell>
             <TableCell align="center">Year of Publication</TableCell>
             {statusColomn && <TableCell align="center">Status</TableCell>}
+            <TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {articles.length > 0 ? (
             articles.map((article) => (
-              <TableRow
-                onClick={() => {
-                  onClick && onClick(article.uid || "");
-                }}
-                key={article.uid}
-              >
+              <TableRow key={article.uid}>
                 <TableCell align="center">{article.title}</TableCell>
                 <TableCell align="center">{article.doi || "N/A"}</TableCell>
-                <TableCell align="center">
-                  {article.journalName || "N/A"}
-                </TableCell>
+                <TableCell align="center">{article.journalName || "N/A"}</TableCell>
                 <TableCell align="center">
                   {article.yearOfPub
                     ? new Date(article.yearOfPub).getFullYear()
                     : "N/A"}
                 </TableCell>
-                {statusColomn && (
-                  <TableCell align="center">{article.status}</TableCell>
-                )}
+                {statusColomn && <TableCell align="center">{article.status}</TableCell>}
+                {/* Button for Edit, Moderate, or Analyse */}
+                <TableCell align="center">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => onClick && onClick(article.uid || "")}
+                  >
+                    {buttonLabel} 
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell align="center" colSpan={5}>
+              <TableCell align="center" colSpan={6}>
                 No results found
               </TableCell>
             </TableRow>

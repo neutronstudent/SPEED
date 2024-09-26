@@ -19,20 +19,29 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get('/')
-  async findAllMatching(@Query('search') search: string) {
-    try {
-      return this.articleService.findAll();
-    } catch {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'No Articles found',
-        },
-        HttpStatus.NOT_FOUND,
-        { cause: error },
-      );
+async findAllMatching(
+  @Query('search') search: string,
+  @Query('status') status?: string,  // Optional status query parameter
+) {
+  try {
+    // If status is provided, filter based on status
+    if (status) {
+      return this.articleService.searchForStatus(status);
     }
+
+    // If no status is provided, return all matching articles
+    return this.articleService.findAll();
+  } catch {
+    throw new HttpException(
+      {
+        status: HttpStatus.NOT_FOUND,
+        error: 'No Articles found',
+      },
+      HttpStatus.NOT_FOUND,
+      { cause: error },
+    );
   }
+}
 
   @Get('/id/:uid')
   async findOne(@Param('uid') uid: string) {
@@ -169,4 +178,5 @@ export class ArticleController {
       );
     }
   }
+
 }

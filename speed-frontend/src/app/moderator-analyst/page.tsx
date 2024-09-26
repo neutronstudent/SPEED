@@ -5,30 +5,33 @@ import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
 import { useRouter } from "next/navigation";
 
-const SubmissionPage: React.FC = () => {
+const ModerationAnalystPage: React.FC = () => {
   const { user } = useUser();
   const router = useRouter();
-  //   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
+  // Fetch articles when the user role changes
   useEffect(() => {
     if (user) {
-      handleSearch();
+      console.log("User role:", user.role); 
+      fetchArticles();
     }
   }, [user]);
 
-  // Function to handle search
-  const handleSearch = async () => {
+  // Function to fetch articles based on the user's role (Moderator or Analyst)
+  const fetchArticles = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      //   const apiUrl = `${backendUrl}/api/articles`;
-      const apiUrl = `${backendUrl}/api/articles/submitter/${user?.uid || ""}`;
+      // Fetch articles based on the status required by the user's role
+      const status = user?.role === "Moderator" ? "new" : "moderated";
+      console.log("Fetching articles with status:", status); 
+      const apiUrl = `${backendUrl}/api/articles?status=${status}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -36,7 +39,7 @@ const SubmissionPage: React.FC = () => {
       }
 
       const data = await response.json();
-      setSearchResults(data);
+      setArticles(data);
     } catch (err) {
       setError("No articles found or server error");
     } finally {
@@ -44,10 +47,13 @@ const SubmissionPage: React.FC = () => {
     }
   };
 
+  // Navigate to the appropriate page depending on the user's role
   const handleEdit = (uid: string) => {
-    // Redirect to edit page
-    console.log("Edit article with uid:", uid);
-    router.push(`/submit?uid=${uid}`);
+    if (user?.role === "Moderator") {
+      router.push(`/moderation?uid=${uid}`);
+    } else if (user?.role === "Analyst") {
+      router.push(`/analysis?uid=${uid}`);
+    }
   };
 
   return (
@@ -60,7 +66,7 @@ const SubmissionPage: React.FC = () => {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        My Submissions
+        {user?.role === "Moderator" ? "Moderation" : "Analysis"} Page
       </Typography>
 
       {/* Show loading state */}
@@ -71,13 +77,13 @@ const SubmissionPage: React.FC = () => {
 
       {/* Table with Search Results */}
       <ResultsTable
-        statusColomn={true}
-        onClick={handleEdit}
-        articles={searchResults}
-        buttonLabel="Edit"
+        statusColomn={true} 
+        onClick={handleEdit} 
+        articles={articles} 
+        buttonLabel={user?.role === "Moderator" ? "Moderate" : "Analyse"}
       />
     </Box>
   );
 };
 
-export default SubmissionPage;
+export default ModerationAnalystPage;
