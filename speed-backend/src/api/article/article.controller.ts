@@ -199,7 +199,10 @@ export class ArticleController {
   @Delete('/id/:uid')
   async deleteArticle(@Param('uid') uid: string) {
     try {
-      return this.articleService.deleteArticle(uid);
+      this.articleService.deleteArticle(uid);
+      
+      return HttpStatus.ACCEPTED
+
     } catch {
       throw new HttpException(
         {
