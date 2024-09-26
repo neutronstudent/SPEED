@@ -16,26 +16,21 @@ function GetUid() {
 }
 
 const SubmissionPage: React.FC = () => {
-  
-  const uid = GetUid();
-
-  useEffect(() => {
-    console.log("UID:", uid);
-  }, [uid]);
 
   return (
-    <Suspense>
+    
     <div>
       <Typography variant="h4" gutterBottom>
         Edit Submission
       </Typography>
-      {uid ? (
-        <SubmissionForm article={uid as string} />
+      <Suspense>
+      {GetUid() ? (
+        <SubmissionForm article={GetUid() as string} />
       ) : (
         <Typography>No UID provided</Typography>
       )}
+      </Suspense>
     </div>
-    </Suspense>
   );
 };
 
