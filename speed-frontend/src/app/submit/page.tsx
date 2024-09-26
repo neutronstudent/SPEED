@@ -23,7 +23,7 @@ const SubmissionPage: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Edit Submission
       </Typography>
-      <Suspense>
+      <Suspense fallback={<div></div>}>
       {GetUid() ? (
         <SubmissionForm article={GetUid() as string} />
       ) : (
