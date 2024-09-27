@@ -60,8 +60,7 @@ describe("SubmissionForm component", () => {
     expect(screen.getByLabelText(/Claim/i)).toHaveValue("");
     expect(screen.getByLabelText(/Result/i)).toHaveValue("");
   });
-
-  /*
+  
   test("renders the form with pre-filled data for editing an article", () => {
     render(<SubmissionForm article={mockArticle} />);
 
@@ -77,7 +76,6 @@ describe("SubmissionForm component", () => {
     expect(screen.getByDisplayValue("Sample Claim")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Sample Result")).toBeInTheDocument();
   });
-  */
 
   test("handles form input changes correctly", () => {
     render(<SubmissionForm />);
