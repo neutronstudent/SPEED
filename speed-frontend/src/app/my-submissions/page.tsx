@@ -5,7 +5,7 @@ import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
 import { useRouter } from "next/navigation";
 
-const SubmissionPage: React.FC = () => {
+const MySubmissionPage: React.FC = () => {
   const { user } = useUser();
   const router = useRouter();
   //   const [searchQuery, setSearchQuery] = useState("");
@@ -79,4 +79,4 @@ const SubmissionPage: React.FC = () => {
   );
 };
 
-export default SubmissionPage;
+export default MySubmissionPage;
