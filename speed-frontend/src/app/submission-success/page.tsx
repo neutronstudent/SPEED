@@ -1,3 +1,4 @@
+"use client";
 // submission success page
 const SubmissionSuccessPage: React.FC = () => {
   return (

@@ -1,17 +1,34 @@
 "use client";
-import React, { useEffect } from "react";
-import SubmissionForm from "@/components/SubmissionForm";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect, useState } from "react";
+// import SubmissionForm from "@/components/SubmissionForm";
+import { useSearchParams } from "next/navigation";
+import { Typography } from "@mui/material";
+import dynamic from "next/dynamic";
 
-const SubmissionPage: React.FC = () => {
+const SubmissionForm = dynamic(() => import("@/components/SubmissionForm"), {
+  ssr: false,
+});
+
+function GetUid()
+{
   const searchParams = useSearchParams();
   const uid = searchParams.get("uid");
 
-  useEffect(() => {
-    console.log("UID:", uid);
-  }, [uid]);
+  return (uid ? (<SubmissionForm article={uid as string} />) : (<Typography>No UID provided</Typography>))
+}
 
-  return <SubmissionForm article={uid as string} />;
+export default function SubmissionPage() {
+
+  return (
+    <div>
+      <Typography variant="h4" gutterBottom>
+        Edit Submission
+      </Typography>
+      <Suspense>
+        <GetUid/>
+      </Suspense>
+    </div>
+  );
 };
 
-export default SubmissionPage;
+

@@ -1,6 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+export enum ArticleState {
+  NEW = 'NEW',
+  MODERATATING = 'MODERATATING',
+  ANALYSING = 'ANALYSING',
+  APPROVED = 'APPROVED',
+  DENIED = 'DENIED'
+}
+
 @Schema()
 export class Article {
   @Prop({ required: true, unique: true })
@@ -10,6 +18,7 @@ export class Article {
   title: string;
 
   @Prop({ required: true })
+
   authors: string;
 
   @Prop({ required: false })
@@ -40,10 +49,10 @@ export class Article {
   moderatorUid: string;
 
   @Prop({ required: false })
-  reviewerUid: string;
+  analyistUid: string;
 
-  @Prop({ required: true })
-  status: string;
+  @Prop({type: String, enum: ArticleState, default: ArticleState.NEW, required: true })
+  status: ArticleState;
 
   @Prop({ required: true })
   submitterUid: string;
@@ -63,6 +72,13 @@ export class CreateArticleDto {
   status: string;
   submitterUid: string;
 }
+
+export class ArticlePatchDto {
+  moderatorUid?: string
+  analyistUid?: string;
+  status?: ArticleState;
+}
+
 export type ArticleDocument = HydratedDocument<Article>;
 export const ArticleSchema = SchemaFactory.createForClass(Article);
 

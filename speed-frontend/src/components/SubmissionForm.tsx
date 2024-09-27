@@ -1,8 +1,9 @@
 import { Article } from "@/types";
-import { TextField, Button, Divider, Box } from "@mui/material";
+import { TextField, Button, Divider, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 import { useRouter } from "next/navigation";
+import DeleteArticle from "./DeletionDialog";
 
 interface SubmissionFormProps {
   article?: string;
@@ -11,6 +12,8 @@ interface SubmissionFormProps {
 export default function SubmissionForm({ article }: SubmissionFormProps) {
   const { user } = useUser();
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [formData, setFormData] = useState<Article>({
     id: "",
     uid: "",
@@ -40,9 +43,11 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
         setFormData(data as Article);
       } else {
         console.error("Failed to fetch article data");
+        setError("Article not found");
       }
     } catch (error) {
       console.error("Failed to fetch article data", error);
+      setError("Article not found");
     }
   };
 
@@ -93,7 +98,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     });
     try {
       const response = await fetch(
-        article
+        article !== "new"
           ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${formData.uid}`
           : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles`,
         {
@@ -109,9 +114,42 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
         router.push("/submission-success");
       } else {
         console.error("Failed to submit article");
+        setError("Failed to submit article");
       }
     } catch (error) {
       console.error("Failed to submit article", error);
+      setError("Failed to submit article");
+    }
+  };
+
+  // Handle delete submission
+  const setDeleteConfirmation = (open: boolean) => {
+    setDeleteConfirmationOpen(open || !deleteConfirmationOpen);
+  };
+
+  const handleConfirmDelete = async (uid: string) => {
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${uid}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        console.log(`${uid} Article deleted successfully`);
+        console.log(response);
+        router.push("/my-submissions");
+      } else {
+        console.error("Failed to delete article");
+        setError("Failed to delete article");
+      }
+    } catch (error) {
+      console.error("Failed to delete article", error);
+      setError("Failed to delete article");
     }
   };
 
@@ -144,6 +182,8 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             width: "100%",
           }}
         >
+          {/* Error Message */}
+          {error && <Typography color="error">{error}</Typography>}
           <TextField
             id="title"
             name="title"
@@ -241,9 +281,34 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             onChange={handleChange}
           />
           <Divider />
-          <Button variant="contained" type="submit">
-            {article !== "new" ? "Update Submission" : "Submit Article"}
-          </Button>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              gap: "16px",
+            }}
+          >
+            <Button variant="contained" type="submit">
+              {article !== "new" ? "Update Submission" : "Submit Article"}
+            </Button>
+            {article !== "new" && (
+              <>
+                <DeleteArticle
+                  article={formData as Article}
+                  open={deleteConfirmationOpen}
+                  onClose={setDeleteConfirmation}
+                  onConfirm={() => handleConfirmDelete(formData.uid || "")}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() => setDeleteConfirmation(true)}
+                >
+                  Delete Submission
+                </Button>
+              </>
+            )}
+          </Box>
         </Box>
       )}
     </Box>
