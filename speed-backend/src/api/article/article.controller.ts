@@ -1,18 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpException,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { ArticleService } from './article.service';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put, Query, } from '@nestjs/common';
+import { ArticleService } from "./article.service";
 import { error } from 'console';
-import { Article, CreateArticleDto } from './article.schema';
+import { Article, ArticlePatchDto, ArticleState, CreateArticleDto} from './article.schema';
 import { randomUUID } from 'crypto';
 
 @Controller('api/articles')
@@ -20,7 +9,7 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get('/')
-  async findAllMatching(@Query('search') search: string) {
+  async findAllMatching() {
     try {
       return this.articleService.findAll();
     } catch {
@@ -51,11 +40,59 @@ export class ArticleController {
     }
   }
 
-  @Get('/search')
-  async findText(@Query('text') searchStr: string) {
+  //compleatly update data object
+  @Put('/id/:uid')
+  async updateArticle(
+    @Param('uid') uid: string,
+    @Body() articleDto: CreateArticleDto,
+  ) {
     try {
-      return this.articleService.searchForText(searchStr);
+      const article = Object.assign(new Article(), articleDto);
+      return this.articleService.updateArticle(uid, article);
     } catch {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_ACCEPTABLE,
+          error: 'Unable to update article',
+        },
+        HttpStatus.NOT_ACCEPTABLE,
+        { cause: error },
+      );
+    }
+  }
+
+  //update important fields
+  @Patch('/id/:uid/')
+  async patchArticle(@Param('uid') uid: string,  patchDto: ArticlePatchDto) {
+    try {
+      return this.articleService.updateArticle(uid, patchDto);
+    }
+
+    catch {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Article not found',
+        },
+        HttpStatus.NOT_FOUND,
+        { cause: error },
+      );
+
+    }
+  }
+
+
+
+  //search routes for searching for articles based upon strings and moderators
+  //by default only show approved articles unless query paramater says otherwise
+  @Get('/search')
+  async findText(@Query('text') searchStr: string, @Query('status') status: ArticleState = ArticleState.APPROVED)
+  {
+    try {
+      return this.articleService.searchArticles(searchStr, status);
+    }
+
+    catch {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -67,6 +104,7 @@ export class ArticleController {
     }
   }
 
+  //get all articles with moderator uid
   @Get('/moderator/:uid')
   async findModerator(@Param('uid') uid: string) {
     try {
@@ -83,11 +121,15 @@ export class ArticleController {
     }
   }
 
-  @Get('/reviewer/:uid')
-  async findReviewer(@Param('uid') uid: string) {
+  //get all articles with reviewer uid
+  @Get('/analyist/:uid')
+  async findAnalyist(@Param('uid') uid: string) {
     try {
-      return this.articleService.searchForReviewer(uid);
-    } catch {
+      return this.articleService.searchForAnalysist(uid)
+    }
+
+    catch {
+
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -136,7 +178,8 @@ export class ArticleController {
     try {
       const article = Object.assign(new Article(), articleDto);
       article.uid = randomUUID();
-      article.status = 'new';
+
+      article.status = ArticleState.NEW;
 
       return this.articleService.addArticle(article);
     } catch {
@@ -151,30 +194,15 @@ export class ArticleController {
     }
   }
 
-  @Put('/id/:uid')
-  async updateArticle(
-    @Param('uid') uid: string,
-    @Body() articleDto: CreateArticleDto,
-  ) {
-    try {
-      const article = Object.assign(new Article(), articleDto);
-      return this.articleService.updateArticle(uid, article);
-    } catch {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_ACCEPTABLE,
-          error: 'Unable to update article',
-        },
-        HttpStatus.NOT_ACCEPTABLE,
-        { cause: error },
-      );
-    }
-  }
+
 
   @Delete('/id/:uid')
   async deleteArticle(@Param('uid') uid: string) {
     try {
-      return this.articleService.deleteArticle(uid);
+      this.articleService.deleteArticle(uid);
+      
+      return HttpStatus.ACCEPTED
+
     } catch {
       throw new HttpException(
         {

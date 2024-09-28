@@ -9,26 +9,26 @@ const SubmissionForm = dynamic(() => import("@/components/SubmissionForm"), {
   ssr: false,
 });
 
-const SubmissionPage: React.FC = () => {
+function GetUid()
+{
   const searchParams = useSearchParams();
   const uid = searchParams.get("uid");
 
-  useEffect(() => {
-    console.log("UID:", uid);
-  }, [uid]);
+  return (uid ? (<SubmissionForm article={uid as string} />) : (<Typography>No UID provided</Typography>))
+}
+
+export default function SubmissionPage() {
 
   return (
     <div>
       <Typography variant="h4" gutterBottom>
         Edit Submission
       </Typography>
-      {uid ? (
-        <SubmissionForm article={uid as string} />
-      ) : (
-        <Typography>No UID provided</Typography>
-      )}
+      <Suspense>
+        <GetUid/>
+      </Suspense>
     </div>
   );
 };
 
-export default SubmissionPage;
+

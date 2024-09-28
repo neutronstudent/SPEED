@@ -1,7 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { Article } from './article.schema';
+import { Article, ArticleState } from './article.schema';
+
+
 
 @Injectable()
 export class ArticleService {
@@ -13,18 +15,19 @@ export class ArticleService {
     return await this.articleModel.create(newArticle);
   }
 
-  async findAll(): Promise<Article[]> {
-    return await this.articleModel.find().exec();
-  }
+    async findAll(): Promise<Article[]> {
+        return await this.articleModel.find().exec();
+    }
+        
+    async findOne(uid: string): Promise<Article> {
+        return await this.articleModel.findOne({uid}).exec();
+    }
+    
+    async searchArticles(searchText: string, status: ArticleState): Promise<Article[]> {
+        
+        const query = {$text: {$search: searchText}, status};
 
-  async findOne(uid: string): Promise<Article> {
-    return await this.articleModel.findOne({ uid }).exec();
-  }
-
-  async searchForText(searchText: string): Promise<Article[]> {
-    const query = { $text: { $search: searchText } };
-
-    const sort = { score: { $meta: 'textScore' } };
+        const sort = { score: { $meta: "textScore" } };
 
     //searches both titles and bodies for releveant text
     return this.articleModel.find(query).sort(sort).exec();
@@ -38,21 +41,23 @@ export class ArticleService {
     return await this.articleModel.find({ moderatorUid: uid });
   }
 
-  async searchForReviewer(uid: string): Promise<Article[]> {
-    return await this.articleModel.find({ reviewerUid: uid });
-  }
+    async searchForAnalysist(uid: string): Promise<Article[]>
+    {
+        return await this.articleModel.find({analyistUid: uid});
+    }
 
-  async searchForSubmitter(uid: string): Promise<Article[]> {
-    return await this.articleModel.find({ submitterUid: uid });
-  }
+    async searchForSubmitter(uid: string): Promise<Article[]> {
+        return await this.articleModel.find({ submitterUid: uid });
+    }
 
-  async updateArticle(uid: string, updatedArticle: Article): Promise<Article> {
-    return await this.articleModel.findOneAndUpdate({ uid }, updatedArticle, {
-      new: true,
-    });
-  }
+    async updateArticle(uid: string, newData){
+        return await this.articleModel.updateOne({uid}, newData);
+    }
 
-  async deleteArticle(uid: string): Promise<Article> {
-    return await this.articleModel.findOneAndDelete({ uid });
-  }
+    async deleteArticle(uid: string){
+        await this.articleModel.deleteOne({uid});
+    }
+
+
+
 }
