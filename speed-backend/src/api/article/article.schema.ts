@@ -56,6 +56,13 @@ export class Article {
 
   @Prop({ required: true })
   submitterUid: string;
+
+  @Prop({required: false})
+  reviewNote: string;
+
+  @Prop({required: false})
+  modNoter: string;
+
 }
 
 export class CreateArticleDto {
@@ -77,6 +84,8 @@ export class ArticlePatchDto {
   moderatorUid?: string
   analyistUid?: string;
   status?: ArticleState;
+  reviewNote?: string;
+  modNoter?: string;
 }
 
 export type ArticleDocument = HydratedDocument<Article>;
