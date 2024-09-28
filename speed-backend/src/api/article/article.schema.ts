@@ -3,8 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export enum ArticleState {
   NEW = 'NEW',
-  MODERATATING = 'MODERATATING',
-  ANALYSING = 'ANALYSING',
+  MODERATED = 'MODERATED',
   APPROVED = 'APPROVED',
   DENIED = 'DENIED'
 }
