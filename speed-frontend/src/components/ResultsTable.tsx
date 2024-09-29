@@ -13,12 +13,14 @@ interface ResultsTableProps {
   articles: Article[];
   statusColomn?: boolean;
   onClick?: (uid: string) => void;
+  editAction?: (uid: string) => React.ReactNode;
 }
 
 const ResultsTable = ({
   articles,
   statusColomn,
   onClick,
+  editAction,
 }: ResultsTableProps) => {
   return (
     <TableContainer component={Paper}>
@@ -30,6 +32,7 @@ const ResultsTable = ({
             <TableCell align="center">Journal Name</TableCell>
             <TableCell align="center">Year of Publication</TableCell>
             {statusColomn && <TableCell align="center">Status</TableCell>}
+            {editAction && <TableCell align="center">Edit</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -53,6 +56,11 @@ const ResultsTable = ({
                 </TableCell>
                 {statusColomn && (
                   <TableCell align="center">{article.status}</TableCell>
+                )}
+                {editAction && (
+                  <TableCell align="center">
+                    {editAction(article.uid || "")}
+                  </TableCell>
                 )}
               </TableRow>
             ))
