@@ -22,6 +22,21 @@ const ResultsTable = ({
   onClick,
   editAction,
 }: ResultsTableProps) => {
+  const getArticleStatus = (status: string) => {
+    switch (status) {
+      case "NEW":
+        return "New";
+      case "MODERATED":
+        return "Moderated";
+      case "APPROVED":
+        return "Approved";
+      case "REJECTED":
+        return "Rejected";
+      default:
+        return "N/A";
+    }
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -55,9 +70,11 @@ const ResultsTable = ({
                     : "N/A"}
                 </TableCell>
                 {statusColomn && (
-                  <TableCell align="center">{article.status}</TableCell>
+                  <TableCell align="center">
+                    {getArticleStatus(article.status)}
+                  </TableCell>
                 )}
-                {editAction && (
+                {editAction && article.status === "NEW" && (
                   <TableCell align="center">
                     {editAction(article.uid || "")}
                   </TableCell>
