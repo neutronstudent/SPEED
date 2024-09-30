@@ -1,24 +1,28 @@
 "use client";
-import React, { Suspense, useEffect } from "react";
-import ModerationAnalystForm from "@/components/ModerationAnalystForm";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { Typography } from "@mui/material";
+import dynamic from "next/dynamic";
 
-const ModerationPage: React.FC = () => {
+const ModerationAnalystForm = dynamic(() => import("@/components/ModerationAnalystForm"), { ssr: false });
+
+function GetUid() {
   const searchParams = useSearchParams();
   const uid = searchParams.get("uid");
 
-  useEffect(() => {
-    console.log("UID:", uid);
-  }, [uid]);
+  return uid ? (
+    <ModerationAnalystForm articleUid={uid as string} />
+  ) : (
+    <Typography>No UID provided</Typography>
+  );
+}
 
+export default function ModerationPage() {
   return (
     <div>
-      <h1>Moderation Page</h1>
-      <Suspense fallback={<div>Loading...</div>}>
-        {uid && <ModerationAnalystForm articleUid={uid as string} />}
+      <Suspense>
+        <GetUid />
       </Suspense>
     </div>
   );
-};
-
-export default ModerationPage;
+}

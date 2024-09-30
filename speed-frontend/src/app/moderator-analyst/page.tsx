@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
@@ -14,16 +14,8 @@ const ModerationAnalystPage: React.FC = () => {
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
-  // Fetch articles when the user role changes
-  useEffect(() => {
-    if (user) {
-      console.log("User role:", user.role); 
-      fetchArticles();
-    }
-  }, [user]);
-
   // Function to fetch articles based on the user's role (Moderator or Analyst)
-  const fetchArticles = async () => {
+  const fetchArticles = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -51,7 +43,15 @@ const ModerationAnalystPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, backendUrl]);
+
+  // Fetch articles when the user role changes
+  useEffect(() => {
+    if (user) {
+      console.log("User role:", user.role); 
+      fetchArticles();
+    }
+  }, [user, fetchArticles]);
 
   // Navigate to the appropriate page depending on the user's role
   const handleEdit = (uid: string) => {
