@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
 import { useRouter } from "next/navigation";
+import EditArticleButton from "@/components/EditArticleButton";
 
 const MySubmissionPage: React.FC = () => {
   const { user } = useUser();
@@ -50,6 +51,10 @@ const MySubmissionPage: React.FC = () => {
     router.push(`/submit?uid=${uid}`);
   };
 
+  const editButton = (uid: string) => {
+    return <EditArticleButton articleId={uid} />;
+  };
+
   return (
     <Box
       component="main"
@@ -72,7 +77,6 @@ const MySubmissionPage: React.FC = () => {
       {/* Table with Search Results */}
       <ResultsTable
         statusColomn={true}
-        onClick={handleEdit}
         articles={searchResults}
         buttonLabel="Edit"
       />

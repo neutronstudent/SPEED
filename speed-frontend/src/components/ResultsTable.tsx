@@ -23,6 +23,21 @@ const ResultsTable = ({
   buttonLabel, 
   statusColomn,
 }: ResultsTableProps) => {
+  const getArticleStatus = (status: string) => {
+    switch (status) {
+      case "NEW":
+        return "New";
+      case "MODERATED":
+        return "Moderated";
+      case "APPROVED":
+        return "Approved";
+      case "REJECTED":
+        return "Rejected";
+      default:
+        return "N/A";
+    }
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>

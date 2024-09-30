@@ -9,26 +9,23 @@ const SubmissionForm = dynamic(() => import("@/components/SubmissionForm"), {
   ssr: false,
 });
 
-function GetUid()
-{
+function GetUid() {
   const searchParams = useSearchParams();
   const uid = searchParams.get("uid");
 
-  return (uid ? (<SubmissionForm article={uid as string} />) : (<Typography>No UID provided</Typography>))
+  return uid ? (
+    <SubmissionForm article={uid as string} />
+  ) : (
+    <Typography>No UID provided</Typography>
+  );
 }
 
 export default function SubmissionPage() {
-
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
-        Edit Submission
-      </Typography>
       <Suspense>
-        <GetUid/>
+        <GetUid />
       </Suspense>
     </div>
   );
-};
-
-
+}
