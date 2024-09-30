@@ -84,13 +84,13 @@ export default function ModerationAnalystForm({
       console.log("Sending PATCH request with data:", patchData);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${articleUid}`, // PATCH request to update the article
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${articleUid}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(patchData),  // Include the feedback or analysis along with status
+          body: JSON.stringify(patchData), 
         }
       );
 

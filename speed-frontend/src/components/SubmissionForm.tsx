@@ -92,10 +92,10 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
       console.error("User not logged in");
       return;
     }
-    setFormData({
+    const patchData = {
       ...formData,
       submitterUid: user.uid,
-    });
+    };
     try {
       const response = await fetch(
         article !== "new"
@@ -106,7 +106,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(patchData),
         }
       );
       if (response.ok) {

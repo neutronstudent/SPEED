@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import ModerationAnalystForm from "@/components/ModerationAnalystForm";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -14,7 +14,9 @@ const AnalysisPage: React.FC = () => {
   return (
     <div>
       <h1>Analysis Page</h1>
-      {uid && <ModerationAnalystForm articleUid={uid as string} />}
+      <Suspense fallback={<div>Loading...</div>}>
+        {uid && <ModerationAnalystForm articleUid={uid as string} />}
+      </Suspense>
     </div>
   );
 };
