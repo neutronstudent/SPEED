@@ -8,13 +8,12 @@ const ModerationPage: React.FC = () => {
   const uid = searchParams.get("uid");
 
   useEffect(() => {
-    console.log("UID:", uid); // Log the UID to check if it's being retrieved correctly
+    console.log("UID:", uid); 
   }, [uid]);
 
   return (
     <div>
       <h1>Moderation Page</h1>
-      {/* Pass the `uid` to the form component */}
       {uid && <ModerationAnalystForm articleUid={uid as string} />}
     </div>
   );

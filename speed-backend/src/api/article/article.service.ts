@@ -11,6 +11,17 @@ export class ArticleService {
     @InjectModel(Article.name) private articleModel: Model<Article>,
   ) {}
 
+  async updatePartially(uid: string, patchDto: Partial<Article>): Promise<Article> {
+    const updatedArticle = await this.articleModel.findOneAndUpdate(
+      { uid },               
+      { $set: patchDto },    
+      { new: true }           
+    ).exec();
+  
+    console.log("Updated article:", updatedArticle); // Log to verify modNote
+    return updatedArticle;
+  }
+
   async addArticle(newArticle: Article): Promise<Article> {
     return await this.articleModel.create(newArticle);
   }

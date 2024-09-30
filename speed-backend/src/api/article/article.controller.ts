@@ -49,12 +49,9 @@ async findAllMatching(
     }
   }
 
-  //compleatly update data object
+  
   @Put('/id/:uid')
-  async updateArticle(
-    @Param('uid') uid: string,
-    @Body() articleDto: CreateArticleDto,
-  ) {
+  async updateArticle(@Param('uid') uid: string, @Body() articleDto: CreateArticleDto) {
     try {
       const article = Object.assign(new Article(), articleDto);
       return this.articleService.updateArticle(uid, article);
@@ -65,31 +62,25 @@ async findAllMatching(
           error: 'Unable to update article',
         },
         HttpStatus.NOT_ACCEPTABLE,
-        { cause: error },
       );
     }
   }
-
+/*
   //update important fields
-  @Patch('/id/:uid/')
-  async patchArticle(@Param('uid') uid: string,  patchDto: ArticlePatchDto) {
+  @Patch('/id/:uid')
+  async patchArticle(@Param('uid') uid: string, @Body() patchDto: ArticlePatchDto) {
     try {
-      return this.articleService.updateArticle(uid, patchDto);
-    }
-
-    catch {
+      return this.articleService.updateArticle(uid, patchDto);  
+    } catch {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
           error: 'Article not found',
         },
         HttpStatus.NOT_FOUND,
-        { cause: error },
       );
-
     }
-  }
-
+  }*/
 
 
   //search routes for searching for articles based upon strings and moderators
@@ -224,4 +215,24 @@ async findAllMatching(
     }
   }
 
+  
+  @Patch('/id/:uid')
+async updatePartially(
+  @Param('uid') uid: string,
+  @Body() patchDto: ArticlePatchDto,
+) {
+  console.log("Received patchDto:", patchDto);
+  try {
+    const updatedArticle = await this.articleService.updatePartially(uid, patchDto);
+    return updatedArticle;
+  } catch (error) {
+    throw new HttpException(
+      {
+        status: HttpStatus.NOT_FOUND,
+        error: 'Article not found or failed to update',
+      },
+      HttpStatus.NOT_FOUND,
+    );
+  }
+}
 }

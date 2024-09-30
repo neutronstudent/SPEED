@@ -16,8 +16,8 @@ export default function ModerationAnalystForm({
   const router = useRouter();
   const [formData, setFormData] = useState<Article | null>(null);
   const [feedback, setFeedback] = useState<string>("");
+  const [analysis, setAnalysis] = useState<string>("");
   const [decision, setDecision] = useState<"reject" | "approve" | null>(null);
-  const [analyzed, setAnalyzed] = useState<boolean>(false); // For analysts
   const [loading, setLoading] = useState<boolean>(false);
 
   // Function to fetch article data
@@ -29,6 +29,7 @@ export default function ModerationAnalystForm({
       );
       if (response.ok) {
         const data = await response.json();
+        console.log("Fetched article data:", data);
         setFormData(data as Article);
       } else {
         console.error("Failed to fetch article data");
@@ -52,14 +53,13 @@ export default function ModerationAnalystForm({
     setFeedback(event.target.value);
   };
 
+  const handleAnalysisChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAnalysis(event.target.value);
+  };
+
   // Handle the decision buttons (for Moderator)
   const handleDecision = (decisionType: "reject" | "approve") => {
     setDecision(decisionType);
-  };
-
-  // Handle "Analyzed" checkbox toggle (for Analyst)
-  const handleAnalyzedToggle = () => {
-    setAnalyzed(!analyzed);
   };
 
   // Handle form submission (Confirm button)
@@ -70,23 +70,30 @@ export default function ModerationAnalystForm({
     }
 
     try {
+      let updatedStatus = "";
+      let patchData: any = {};
+
+      if (user?.role === "Moderator") {
+        updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
+        patchData = { modNote: feedback, status: updatedStatus }; 
+      } else if (user?.role === "Analyst") {
+        updatedStatus = "APPROVED"; 
+        patchData = { reviewNote: analysis, status: updatedStatus };
+      }
+
+      console.log("Sending PATCH request with data:", patchData);
+
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${
-          user?.role === "Moderator" ? "moderation" : "analysis"
-        }/${articleUid}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${articleUid}`, // PATCH request to update the article
         {
-          method: "POST",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            feedback,
-            decision,
-            analyzed,
-            userRole: user?.role,
-          }),
+          body: JSON.stringify(patchData),  // Include the feedback or analysis along with status
         }
       );
+
       if (response.ok) {
         console.log("Form submitted successfully");
         router.push(
@@ -191,17 +198,24 @@ export default function ModerationAnalystForm({
             }}
           />
           <Divider />
-
-          {/* Feedback TextField */}
+          {user?.role === "Analyst" && (
           <TextField
-            label="Feedback"
-            value={feedback}
-            onChange={handleFeedbackChange}
+            label="Moderator's Feedback"
+            value={formData.modNote || "No feedback from moderator"}
             fullWidth
-            multiline
-            rows={4}
+            InputProps={{ readOnly: true }}
           />
-          <Divider />
+        )}
+          {/* Feedback or Analysis TextField */}
+          <TextField
+          label={user?.role === "Moderator" ? "Feedback" : "Analysis"}
+          value={user?.role === "Moderator" ? feedback : analysis}
+          onChange={user?.role === "Moderator" ? handleFeedbackChange : handleAnalysisChange}
+          fullWidth
+          multiline
+          rows={4}
+        />
+        <Divider />
 
           {user?.role === "Moderator" ? (
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
@@ -221,18 +235,7 @@ export default function ModerationAnalystForm({
                 Approve
               </Button>
             </Box>
-          ) : (
-            <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-              {/* Analyzed Toggle for Analyst */}
-              <Button
-                variant={analyzed ? "contained" : "outlined"}
-                color="success"
-                onClick={handleAnalyzedToggle}
-              >
-                {analyzed ? "Analyzed" : "Mark as Analyzed"}
-              </Button>
-            </Box>
-          )}
+          ) : null}
 
           {/* Confirm Button */}
           <Button

@@ -11,6 +11,10 @@ export interface Article {
   SEP?: string;
   claim?: string;
   result?: string;
+  moderatorUid?: string;
+  analystUid?: string;
   submitterUid: string;
   status: string;
+  reviewNote?: string;
+  modNote?: string;
 }
