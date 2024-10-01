@@ -59,7 +59,7 @@ describe("Sidenav component", () => {
 
     // Click on "Submit Article" link
     fireEvent.click(screen.getByText("Submit Article"));
-    expect(mockPush).toHaveBeenCalledWith("/submit-article");
+    expect(mockPush).toHaveBeenCalledWith("/submit?uid=new");
 
     // Click on "My Submissions" link
     fireEvent.click(screen.getByText("My Submissions"));

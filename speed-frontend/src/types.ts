@@ -4,7 +4,7 @@ export interface Article {
   title: string;
   authors: string;
   journalName: string;
-  yearOfPub: number;
+  yearOfPub: Date;
   vol?: string;
   pages?: string;
   doi?: string;

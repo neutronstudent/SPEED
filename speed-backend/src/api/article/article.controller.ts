@@ -54,6 +54,8 @@ async findAllMatching(
   async updateArticle(@Param('uid') uid: string, @Body() articleDto: CreateArticleDto) {
     try {
       const article = Object.assign(new Article(), articleDto);
+      article.yearOfPub = new Date(article.yearOfPub);
+      console.log(article);
       return this.articleService.updateArticle(uid, article);
     } catch {
       throw new HttpException(

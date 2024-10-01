@@ -24,7 +24,7 @@ const ResultsTable = ({
   statusColomn,
 }: ResultsTableProps) => {
   const getArticleStatus = (status: string) => {
-    switch (status) {
+    switch (status.toUpperCase()) {
       case "NEW":
         return "New";
       case "MODERATED":
