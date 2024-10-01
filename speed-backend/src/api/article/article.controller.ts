@@ -48,6 +48,8 @@ export class ArticleController {
   ) {
     try {
       const article = Object.assign(new Article(), articleDto);
+      article.yearOfPub = new Date(article.yearOfPub);
+      console.log(article);
       return this.articleService.updateArticle(uid, article);
     } catch {
       throw new HttpException(

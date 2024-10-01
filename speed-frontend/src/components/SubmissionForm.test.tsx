@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import SubmissionForm from "./SubmissionForm";
 import { Article } from "@/types";
+import { useRouter } from "next/navigation";
 
 // Mock the fetch function
 const mockArticle: Article = {
@@ -10,7 +11,7 @@ const mockArticle: Article = {
   title: "Sample Article",
   authors: "John Doe",
   journalName: "Sample Journal",
-  yearOfPub: 2021,
+  yearOfPub: new Date("2021"),
   vol: "1",
   pages: "100",
   doi: "10.1234/5678",
@@ -18,8 +19,13 @@ const mockArticle: Article = {
   claim: "Sample Claim",
   result: "Sample Result",
   submitterUid: "12345",
-  status: "NEW"
+  status: "NEW",
 };
+
+// Mock useRouter
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
 
 // Mock the firebase user with the uid "12345"
 jest.mock("./UserContext", () => ({
@@ -50,9 +56,9 @@ describe("SubmissionForm component", () => {
     expect(screen.getByLabelText(/Submission Title/i)).toHaveValue("");
     expect(screen.getByLabelText(/Authors/i)).toHaveValue("");
     expect(screen.getByLabelText(/Journal Name/i)).toHaveValue("");
-    expect(screen.getByLabelText(/Year of Publication/i)).toHaveValue(0);
-    expect(screen.getByLabelText(/Volume/i)).toHaveValue(null);
-    expect(screen.getByLabelText(/Pages/i)).toHaveValue(null);
+    expect(screen.getByLabelText(/Year of Publication/i)).toHaveValue("");
+    expect(screen.getByLabelText(/Volume/i)).toHaveValue("");
+    expect(screen.getByLabelText(/Pages/i)).toHaveValue("");
     expect(screen.getByLabelText(/DOI/i)).toHaveValue("");
     expect(screen.getByLabelText(/Software Engineering Practice/i)).toHaveValue(
       ""
@@ -60,21 +66,23 @@ describe("SubmissionForm component", () => {
     expect(screen.getByLabelText(/Claim/i)).toHaveValue("");
     expect(screen.getByLabelText(/Result/i)).toHaveValue("");
   });
-  
-  test("renders the form with pre-filled data for editing an article", () => {
-    render(<SubmissionForm article={mockArticle} />);
+
+  test("renders the form with pre-filled data for editing an article", async () => {
+    render(<SubmissionForm article={"12345"} />);
 
     // Check if the form is rendered with the correct initial values
-    expect(screen.getByDisplayValue("Sample Article")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Sample Journal")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("2021")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("1")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("100")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("10.1234/5678")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Sample SEP")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Sample Claim")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Sample Result")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Sample Article")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Sample Journal")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("2021")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("1")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("100")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("10.1234/5678")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Sample SEP")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Sample Claim")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Sample Result")).toBeInTheDocument();
+    });
   });
 
   test("handles form input changes correctly", () => {
@@ -94,9 +102,9 @@ describe("SubmissionForm component", () => {
     fireEvent.change(titleInput, { target: { value: "New Article" } });
     fireEvent.change(authorsInput, { target: { value: "Jane Doe" } });
     fireEvent.change(journalNameInput, { target: { value: "New Journal" } });
-    fireEvent.change(yearOfPubInput, { target: { value: 2022 } });
-    fireEvent.change(volInput, { target: { value: 2 } });
-    fireEvent.change(pagesInput, { target: { value: 200 } });
+    fireEvent.change(yearOfPubInput, { target: { value: "2022" } });
+    fireEvent.change(volInput, { target: { value: "2" } });
+    fireEvent.change(pagesInput, { target: { value: "200" } });
     fireEvent.change(doiInput, { target: { value: "10.9876/5432" } });
     fireEvent.change(SEPInput, { target: { value: "New SEP" } });
     fireEvent.change(claimInput, { target: { value: "New Claim" } });
@@ -106,9 +114,9 @@ describe("SubmissionForm component", () => {
     expect(titleInput).toHaveValue("New Article");
     expect(authorsInput).toHaveValue("Jane Doe");
     expect(journalNameInput).toHaveValue("New Journal");
-    expect(yearOfPubInput).toHaveValue(2022);
-    expect(volInput).toHaveValue(2);
-    expect(pagesInput).toHaveValue(200);
+    expect(yearOfPubInput).toHaveValue("2022");
+    expect(volInput).toHaveValue("2");
+    expect(pagesInput).toHaveValue("200");
     expect(doiInput).toHaveValue("10.9876/5432");
     expect(SEPInput).toHaveValue("New SEP");
     expect(claimInput).toHaveValue("New Claim");
