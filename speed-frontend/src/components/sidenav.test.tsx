@@ -78,7 +78,7 @@ describe("Sidenav component", () => {
 
     // Click on "Moderation" link
     fireEvent.click(screen.getByText("Moderation"));
-    expect(mockPush).toHaveBeenCalledWith("/moderation");
+    expect(mockPush).toHaveBeenCalledWith("/moderator-analyst");
   });
 
   test("renders analysis link for Analyst role", () => {
@@ -93,7 +93,7 @@ describe("Sidenav component", () => {
 
     // Click on "Analysis" link
     fireEvent.click(screen.getByText("Analysis"));
-    expect(mockPush).toHaveBeenCalledWith("/analysis");
+    expect(mockPush).toHaveBeenCalledWith("/moderator-analyst");
   });
 
   test("handles logout properly", async () => {

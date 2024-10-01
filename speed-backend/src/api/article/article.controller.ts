@@ -1,7 +1,24 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put, Query, } from '@nestjs/common';
-import { ArticleService } from "./article.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { ArticleService } from './article.service';
 import { error } from 'console';
-import { Article, ArticlePatchDto, ArticleState, CreateArticleDto} from './article.schema';
+import {
+  Article,
+  ArticlePatchDto,
+  ArticleState,
+  CreateArticleDto,
+} from './article.schema';
 import { randomUUID } from 'crypto';
 
 @Controller('api/articles')
@@ -9,29 +26,29 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get('/')
-async findAllMatching(
-  @Query('search') search: string,
-  @Query('status') status?: string,  // Optional status query parameter
-) {
-  try {
-    // If status is provided, filter based on status
-    if (status) {
-      return this.articleService.searchForStatus(status);
-    }
+  async findAllMatching(
+    @Query('search') search: string,
+    @Query('status') status?: string, // Optional status query parameter
+  ) {
+    try {
+      // If status is provided, filter based on status
+      if (status) {
+        return this.articleService.searchForStatus(status);
+      }
 
-    // If no status is provided, return all matching articles
-    return this.articleService.findAll();
-  } catch {
-    throw new HttpException(
-      {
-        status: HttpStatus.NOT_FOUND,
-        error: 'No Articles found',
-      },
-      HttpStatus.NOT_FOUND,
-      { cause: error },
-    );
+      // If no status is provided, return all matching articles
+      return this.articleService.findAll();
+    } catch {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'No Articles found',
+        },
+        HttpStatus.NOT_FOUND,
+        { cause: error },
+      );
+    }
   }
-}
 
   @Get('/id/:uid')
   async findOne(@Param('uid') uid: string) {
@@ -49,9 +66,11 @@ async findAllMatching(
     }
   }
 
-  
   @Put('/id/:uid')
-  async updateArticle(@Param('uid') uid: string, @Body() articleDto: CreateArticleDto) {
+  async updateArticle(
+    @Param('uid') uid: string,
+    @Body() articleDto: CreateArticleDto,
+  ) {
     try {
       const article = Object.assign(new Article(), articleDto);
       article.yearOfPub = new Date(article.yearOfPub);
@@ -67,7 +86,7 @@ async findAllMatching(
       );
     }
   }
-/*
+  /*
   //update important fields
   @Patch('/id/:uid')
   async patchArticle(@Param('uid') uid: string, @Body() patchDto: ArticlePatchDto) {
@@ -84,17 +103,16 @@ async findAllMatching(
     }
   }*/
 
-
   //search routes for searching for articles based upon strings and moderators
   //by default only show approved articles unless query paramater says otherwise
   @Get('/search')
-  async findText(@Query('text') searchStr: string, @Query('status') status: ArticleState = ArticleState.APPROVED)
-  {
+  async findText(
+    @Query('text') searchStr: string,
+    @Query('status') status: ArticleState = ArticleState.APPROVED,
+  ) {
     try {
       return this.articleService.searchArticles(searchStr, status);
-    }
-
-    catch {
+    } catch {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -127,11 +145,8 @@ async findAllMatching(
   @Get('/analyist/:uid')
   async findAnalyist(@Param('uid') uid: string) {
     try {
-      return this.articleService.searchForAnalysist(uid)
-    }
-
-    catch {
-
+      return this.articleService.searchForAnalysist(uid);
+    } catch {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -196,15 +211,12 @@ async findAllMatching(
     }
   }
 
-
-
   @Delete('/id/:uid')
   async deleteArticle(@Param('uid') uid: string) {
     try {
       this.articleService.deleteArticle(uid);
-      
-      return HttpStatus.ACCEPTED
 
+      return HttpStatus.ACCEPTED;
     } catch {
       throw new HttpException(
         {
@@ -217,24 +229,26 @@ async findAllMatching(
     }
   }
 
-  
   @Patch('/id/:uid')
-async updatePartially(
-  @Param('uid') uid: string,
-  @Body() patchDto: ArticlePatchDto,
-) {
-  console.log("Received patchDto:", patchDto);
-  try {
-    const updatedArticle = await this.articleService.updatePartially(uid, patchDto);
-    return updatedArticle;
-  } catch (error) {
-    throw new HttpException(
-      {
-        status: HttpStatus.NOT_FOUND,
-        error: 'Article not found or failed to update',
-      },
-      HttpStatus.NOT_FOUND,
-    );
+  async updatePartially(
+    @Param('uid') uid: string,
+    @Body() patchDto: ArticlePatchDto,
+  ) {
+    console.log('Received patchDto:', patchDto);
+    try {
+      const updatedArticle = await this.articleService.updatePartially(
+        uid,
+        patchDto,
+      );
+      return updatedArticle;
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Article not found or failed to update',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
-}
 }

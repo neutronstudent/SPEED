@@ -23,13 +23,13 @@ const ModerationAnalystPage: React.FC = () => {
       // Fetch articles based on the status required by the user's role
       let status = "";
       if (user?.role === "Moderator") {
-        status = "new";
+        status = "NEW";
       } else if (user?.role === "Analyst") {
         status = "MODERATED"; // Change this to fetch approved as well
       }
   
       console.log("Fetching articles with status:", status);
-      const apiUrl = `${backendUrl}/api/articles?status=${status}`;
+      const apiUrl = `${backendUrl}/api/articles/status/${status}`;
       const response = await fetch(apiUrl);
   
       if (!response.ok) {
