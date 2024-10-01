@@ -78,7 +78,8 @@ const MySubmissionPage: React.FC = () => {
       <ResultsTable
         statusColomn={true}
         articles={searchResults}
-        editAction={editButton}
+        buttonLabel="Edit"
+        onClick={handleEdit}
       />
     </Box>
   );
