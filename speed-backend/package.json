@@ -1,6 +1,8 @@
 {
+  
   "name": "speed-backend",
   "version": "0.0.1",
+  "type": "commonjs",
   "description": "",
   "author": "",
   "private": true,
