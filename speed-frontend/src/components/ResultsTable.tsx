@@ -19,7 +19,6 @@ import React, { useEffect, useState } from "react";
 interface ResultsTableProps {
   articles: Article[];
   onClick?: (uid: string) => void;
-  onArticleDetails?: (uid: string) => void;
   buttonLabel?: string;
   statusColomn?: boolean;
 }
@@ -29,7 +28,6 @@ const ResultsTable = ({
   onClick,
   buttonLabel,
   statusColomn,
-  onArticleDetails,
 }: ResultsTableProps) => {
   const [expandedArticleUid, setExpandedArticleUid] = useState<string | null>(
     null
