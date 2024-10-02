@@ -15,24 +15,26 @@ import {
   IconButton,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ResultsTableProps {
   articles: Article[];
   onClick?: (uid: string) => void;
   buttonLabel?: string;
-  statusColomn?: boolean;
+  statusColumn?: boolean;
 }
 
 const ResultsTable = ({
   articles,
   onClick,
   buttonLabel,
-  statusColomn,
+  statusColumn,
 }: ResultsTableProps) => {
   const [expandedArticleUid, setExpandedArticleUid] = useState<string | null>(
     null
   );
   const [numberColumns, setNumberColumns] = useState(6);
+  const router = useRouter();
   const getArticleStatus = (status: string) => {
     switch (status.toUpperCase()) {
       case "NEW":
@@ -48,8 +50,12 @@ const ResultsTable = ({
     }
   };
 
+  const handleModify = (uid: string) => {
+    router.push(`/modify-status?uid=${uid}`);
+  };
+
   useEffect(() => {
-    if (statusColomn) {
+    if (statusColumn) {
       setNumberColumns(numberColumns + 1);
     }
     if (buttonLabel) {
@@ -70,7 +76,7 @@ const ResultsTable = ({
             <TableCell align="center">DOI</TableCell>
             <TableCell align="center">Journal Name</TableCell>
             <TableCell align="center">Year of Publication</TableCell>
-            {statusColomn && <TableCell align="center">Status</TableCell>}
+            {statusColumn && <TableCell align="center">Status</TableCell>}
             <TableCell align="center">Details</TableCell>
             {buttonLabel && <TableCell align="center">Actions</TableCell>}
           </TableRow>
@@ -90,9 +96,10 @@ const ResultsTable = ({
                       ? new Date(article.yearOfPub).getFullYear()
                       : "N/A"}
                   </TableCell>
-                  {statusColomn && (
+                  {statusColumn && (
                     <TableCell align="center">
                       {getArticleStatus(article.status)}
+                      <Button variant="outlined" size="small" onClick={() => handleModify(article.uid || "")} sx={{m:0.5}}>Modify</Button>
                     </TableCell>
                   )}
                   {/*Button for Article Details */}
