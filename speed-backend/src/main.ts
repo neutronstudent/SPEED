@@ -8,7 +8,6 @@ async function bootstrap() {
   const port = process.env.PORT || 8082;
   app.use(cors());
   await app.listen(port, () => console.log(`Server running on port ${port}`)); 
-  module.exports = {app: app.getHttpAdapter()}; 
 }
 
 bootstrap();
