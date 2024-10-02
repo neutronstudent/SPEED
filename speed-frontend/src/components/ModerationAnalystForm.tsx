@@ -16,7 +16,6 @@ export default function ModerationAnalystForm({
   const router = useRouter();
   const [formData, setFormData] = useState<Article | null>(null);
   const [feedback, setFeedback] = useState<string>("");
-  //const [analysis, setAnalysis] = useState<string>(""); < for the analysts' note
   const [decision, setDecision] = useState<"reject" | "approve" | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -48,15 +47,31 @@ export default function ModerationAnalystForm({
     }
   }, [articleUid]);
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    
+    // Special handling for yearOfPub to convert it to a Date
+    if (name === "yearOfPub") {
+      setFormData((prevData) => 
+        prevData ? {
+          ...prevData,
+          [name]: new Date(value), 
+        } : null
+      );
+    } else {
+      setFormData((prevData) => 
+        prevData ? {
+          ...prevData,
+          [name]: value,
+        } : null
+      );
+    }
+  };
+  
   // Handle feedback input change
   const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFeedback(event.target.value);
   };
-
-  /*
-  const handleAnalysisChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAnalysis(event.target.value);
-  };*/
 
   // Handle the decision buttons (for Moderator)
   const handleDecision = (decisionType: "reject" | "approve") => {
@@ -72,14 +87,14 @@ export default function ModerationAnalystForm({
 
     try {
       let updatedStatus = "";
-      let patchData: any = {};
+      let patchData: any = { ...formData }; // Include all formData
 
       if (user?.role === "Moderator") {
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
-        patchData = { modNote: feedback, status: updatedStatus }; 
+        patchData = { ...patchData, modNote: feedback, status: updatedStatus };
       } else if (user?.role === "Analyst") {
-        updatedStatus = "APPROVED"; 
-        patchData = { reviewNote: null, status: updatedStatus }; //have to update this PatchData to analysis when updating the anlysts' note function
+        updatedStatus = "APPROVED";
+        patchData = { ...patchData, reviewNote: null, status: updatedStatus };
       }
 
       console.log("Sending PATCH request with data:", patchData);
@@ -91,7 +106,7 @@ export default function ModerationAnalystForm({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(patchData), 
+          body: JSON.stringify(patchData),
         }
       );
 
@@ -144,85 +159,96 @@ export default function ModerationAnalystForm({
         >
           <TextField
             label="Submission Title"
+            name="title"
             value={formData.title}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Authors"
+            name="authors"
             value={formData.authors}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Journal Name"
+            name="journalName"
             value={formData.journalName}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Year of Publication"
+            name="yearOfPub"
             value={formData.yearOfPub.toString()}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Volume"
+            name="vol"
             value={formData.vol || "N/A"}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Pages"
+            name="pages"
             value={formData.pages || "N/A"}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="DOI"
+            name="doi"
             value={formData.doi || "N/A"}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
+          />
+          <Divider />
+          <TextField
+            label="Software Engineering Practice"
+            name="SEP"
+            value={formData.SEP}
+            fullWidth
+            onChange={handleChange}
+          />
+          <TextField
+            label="Claim"
+            name="claim"
+            value={formData.claim}
+            fullWidth
+            onChange={handleChange}
+          />
+          <TextField
+            label="Evidence Result"
+            name="result"
+            value={formData.result}
+            fullWidth
+            onChange={handleChange}
           />
           <Divider />
           {user?.role === "Analyst" && (
-          <TextField
-            label="Moderator's Feedback"
-            value={formData.modNote || "No feedback from moderator"}
-            fullWidth
-            InputProps={{ readOnly: true }}
-          />
-        )}
-          {/* Feedback or Analysis TextField */}
-          {user?.role === "Moderator" && (
-          <TextField
-          label= "Feedback" //{user?.role === "Moderator" ? "Feedback" : "Analysis"}
-          value= {feedback}//{user?.role === "Moderator" ? feedback : analysis}
-          onChange= {handleFeedbackChange}//{user?.role === "Moderator" ? handleFeedbackChange : handleAnalysisChange}
-          fullWidth
-          multiline
-          rows={4}
-        />
+            <TextField
+              label="Moderator's Feedback"
+              value={formData.modNote || "No feedback from moderator"}
+              fullWidth
+            />
           )}
-        <Divider />
-
+          {user?.role === "Moderator" && (
+            <TextField
+              label="Feedback"
+              value={feedback}
+              onChange={handleFeedbackChange}
+              fullWidth
+              multiline
+              rows={4}
+            />
+          )}
+          <Divider />
           {user?.role === "Moderator" ? (
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-              {/* Decision Buttons for Moderator */}
               <Button
                 variant={decision === "reject" ? "contained" : "outlined"}
                 color="error"
@@ -239,8 +265,6 @@ export default function ModerationAnalystForm({
               </Button>
             </Box>
           ) : null}
-
-          {/* Confirm Button */}
           <Button
             variant="contained"
             color="success"
