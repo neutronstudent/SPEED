@@ -1,4 +1,5 @@
 import { Article } from "@/types";
+import { ExpandMore } from "@mui/icons-material";
 import {
   Paper,
   Table,
@@ -11,8 +12,9 @@ import {
   Box,
   Collapse,
   Typography,
+  IconButton,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface ResultsTableProps {
   articles: Article[];
@@ -29,9 +31,10 @@ const ResultsTable = ({
   statusColomn,
   onArticleDetails,
 }: ResultsTableProps) => {
-  const [expandedArticleUid, setExpandedArticleUid] = React.useState<
-    string | null
-  >(null);
+  const [expandedArticleUid, setExpandedArticleUid] = useState<string | null>(
+    null
+  );
+  const [numberColumns, setNumberColumns] = useState(6);
   const getArticleStatus = (status: string) => {
     switch (status.toUpperCase()) {
       case "NEW":
@@ -47,6 +50,19 @@ const ResultsTable = ({
     }
   };
 
+  useEffect(() => {
+    if (statusColomn) {
+      setNumberColumns(numberColumns + 1);
+    }
+    if (buttonLabel) {
+      setNumberColumns(numberColumns + 1);
+    }
+  }, []);
+
+  const handleRowClick = (uid: string) => {
+    setExpandedArticleUid((prevUid) => (prevUid === uid ? null : uid));
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -57,6 +73,7 @@ const ResultsTable = ({
             <TableCell align="center">Journal Name</TableCell>
             <TableCell align="center">Year of Publication</TableCell>
             {statusColomn && <TableCell align="center">Status</TableCell>}
+            <TableCell align="center">Details</TableCell>
             {buttonLabel && <TableCell align="center">Actions</TableCell>}
           </TableRow>
         </TableHead>
@@ -80,9 +97,17 @@ const ResultsTable = ({
                       {getArticleStatus(article.status)}
                     </TableCell>
                   )}
+                  {/*Button for Article Details */}
+                  <TableCell align="center">
+                    <IconButton
+                      onClick={() => handleRowClick(article.uid || "")}
+                    >
+                      <ExpandMore />
+                    </IconButton>
+                  </TableCell>
                   {/* Button for Edit, Moderate, or Analyse */}
                   {buttonLabel && (
-                  <TableCell align="center">
+                    <TableCell align="center">
                       <Button
                         variant="contained"
                         color="primary"
@@ -92,11 +117,11 @@ const ResultsTable = ({
                       </Button>
                     </TableCell>
                   )}
-              </TableRow>
+                </TableRow>
                 <TableRow>
                   <TableCell
                     style={{ paddingBottom: 0, paddingTop: 0 }}
-                    colSpan={6}
+                    colSpan={numberColumns}
                   >
                     <Collapse
                       in={expandedArticleUid === article.uid}
@@ -108,7 +133,22 @@ const ResultsTable = ({
                           Article Details
                         </Typography>
                         <Typography variant="body1" gutterBottom>
-                          {article.SEP}
+                          <strong>SEP:</strong> {article.SEP}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          <strong>Authors:</strong> {article.authors}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          <strong>Pages:</strong> {article.pages}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          <strong>Volume:</strong> {article.vol}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          <strong>Claim:</strong> {article.claim}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                          <strong>Result:</strong> {article.result}
                         </Typography>
                       </Box>
                     </Collapse>
