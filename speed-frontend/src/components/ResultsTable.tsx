@@ -48,7 +48,7 @@ const ResultsTable = ({
             <TableCell align="center">Journal Name</TableCell>
             <TableCell align="center">Year of Publication</TableCell>
             {statusColomn && <TableCell align="center">Status</TableCell>}
-            <TableCell align="center">Actions</TableCell>
+            {buttonLabel && <TableCell align="center">Actions</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -71,15 +71,17 @@ const ResultsTable = ({
                   </TableCell>
                 )}
                 {/* Button for Edit, Moderate, or Analyse */}
-                <TableCell align="center">
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => onClick && onClick(article.uid || "")}
-                  >
-                    {buttonLabel}
-                  </Button>
-                </TableCell>
+                {buttonLabel && (
+                  <TableCell align="center">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => onClick && onClick(article.uid || "")}
+                    >
+                      {buttonLabel}
+                    </Button>
+                  </TableCell>
+                )}
               </TableRow>
             ))
           ) : (

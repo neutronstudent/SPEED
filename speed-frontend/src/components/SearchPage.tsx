@@ -77,7 +77,7 @@ const SearchPage: React.FC = () => {
         {error && <Typography color="error">{error}</Typography>}
   
         {/* Table with Search Results */}
-        <ResultsTable articles={searchResults} />
+        <ResultsTable articles={searchResults}/>
       </Box>
     );
   };
