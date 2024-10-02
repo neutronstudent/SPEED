@@ -77,10 +77,10 @@ export default function ModerationAnalystForm({
       if (user?.role === "Moderator") {
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
         patchData = { modNote: feedback, status: updatedStatus }; 
-      } /*else if (user?.role === "Analyst") {
+      } else if (user?.role === "Analyst") {
         updatedStatus = "APPROVED"; 
-        patchData = { reviewNote: analysis, status: updatedStatus };
-      }*/
+        patchData = { reviewNote: null, status: updatedStatus }; //have to update this PatchData to analysis when updating the anlysts' note function
+      }
 
       console.log("Sending PATCH request with data:", patchData);
 
