@@ -25,7 +25,6 @@ describe("Sidenav component", () => {
   const mockPush = jest.fn();
   const mockSetUser = jest.fn();
 
-  // Mock the useRouter and useUser hooks
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({
       push: mockPush,
@@ -36,7 +35,6 @@ describe("Sidenav component", () => {
       setUser: mockSetUser,
     });
 
-    // Clear all mocks after each test
     mockPush.mockClear();
     mockSetUser.mockClear();
   });
