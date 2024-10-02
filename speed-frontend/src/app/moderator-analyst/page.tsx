@@ -83,7 +83,6 @@ const ModerationAnalystPage: React.FC = () => {
 
       {/* Table with Search Results */}
       <ResultsTable
-        statusColomn={true} 
         onClick={handleEdit} 
         articles={articles} 
         buttonLabel={user?.role === "Moderator" ? "Moderate" : "Analyse"}
