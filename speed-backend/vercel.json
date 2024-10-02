@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
         {
-            "src": "speed-backend/src/main.ts",
+            "src": "src/*.ts",
             "use": "@vercel/node"
         }
     ],
