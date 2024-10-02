@@ -67,7 +67,7 @@ export default function ModerationAnalystForm({
       );
     }
   };
-  
+
   // Handle feedback input change
   const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFeedback(event.target.value);
@@ -87,7 +87,7 @@ export default function ModerationAnalystForm({
 
     try {
       let updatedStatus = "";
-      let patchData: any = { ...formData }; // Include all formData
+      let patchData: any = { ...formData }; 
 
       if (user?.role === "Moderator") {
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
