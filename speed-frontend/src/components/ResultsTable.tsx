@@ -31,8 +31,8 @@ const ResultsTable = ({
         return "Moderated";
       case "APPROVED":
         return "Approved";
-      case "REJECTED":
-        return "Rejected";
+      case "DENIED":
+        return "Denied";
       default:
         return "N/A";
     }
