@@ -4,7 +4,7 @@ import SubmissionForm from "./SubmissionForm";
 import { Article } from "@/types";
 import { useRouter } from "next/navigation";
 
-// Mock the fetch function
+// Mock the article data
 const mockArticle: Article = {
   id: "1",
   uid: "12345",
@@ -37,12 +37,14 @@ jest.mock("./UserContext", () => ({
 }));
 
 // Mock the fetch API
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () => Promise.resolve(mockArticle),
+(global.fetch as jest.Mock)
+  .mockResolvedValueOnce({
     ok: true,
+    json: () => Promise.resolve(mockArticle),
   })
-) as jest.Mock;
+  .mockResolvedValueOnce({
+    ok: true,
+  });
 
 describe("SubmissionForm component", () => {
   afterEach(() => {
@@ -124,7 +126,7 @@ describe("SubmissionForm component", () => {
   });
 
   // test("submits the form data correctly", async () => {
-  //   render(<SubmissionForm article={mockArticle} />);
+  //   render(<SubmissionForm article={"12345"} />);
 
   //   // Change form data
   //   fireEvent.change(screen.getByLabelText(/Submission Title/i), {
@@ -142,7 +144,7 @@ describe("SubmissionForm component", () => {
   //   // Wait for the fetch call to complete
   //   await waitFor(() => {
   //     expect(fetch).toHaveBeenCalledWith(
-  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/1`,
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/12345`,
   //       {
   //         method: "PUT",
   //         headers: {
@@ -154,9 +156,9 @@ describe("SubmissionForm component", () => {
   //           title: "Updated Article",
   //           authors: "John Doe",
   //           journalName: "Sample Journal",
-  //           yearOfPub: 2021,
-  //           vol: 1,
-  //           pages: 100,
+  //           yearOfPub: "2021",
+  //           vol: "1",
+  //           pages: "100",
   //           doi: "10.1234/5678",
   //           SEP: "Sample SEP",
   //           claim: "Sample Claim",
