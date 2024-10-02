@@ -13,4 +13,4 @@ import { ArticleService } from './article.service';
   providers: [ArticleService],
 })
 
-export class articleModule {}
+export class ArticleModule {}
