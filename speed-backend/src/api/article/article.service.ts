@@ -34,15 +34,21 @@ export class ArticleService {
         return await this.articleModel.findOne({uid}).exec();
     }
     
-    async searchArticles(searchText: string, status: ArticleState): Promise<Article[]> {
-        
-        const query = {$text: {$search: searchText}, status};
-
-        const sort = { score: { $meta: "textScore" } };
-
-    //searches both titles and bodies for releveant text
-    return this.articleModel.find(query).sort(sort).exec();
-  }
+    async searchArticles(searchStr: string, statuses: ArticleState[]): Promise<Article[]> {
+      const query: any = {};
+    
+      // Add text search if searchStr is provided
+      if (searchStr) {
+        query.$text = { $search: searchStr };
+      }
+    
+      // Handle multiple statuses by using $in operator for MongoDB
+      if (statuses && statuses.length > 0) {
+        query.status = { $in: statuses };  // Use $in to match any of the provided statuses
+      }
+    
+      return await this.articleModel.find(query).exec();
+    }
 
   async searchForStatus(targetStatus: string): Promise<Article[]> {
     return await this.articleModel.find({ status: targetStatus });

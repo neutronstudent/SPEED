@@ -108,18 +108,21 @@ export class ArticleController {
   @Get('/search')
   async findText(
     @Query('text') searchStr: string,
-    @Query('status') status: ArticleState = ArticleState.APPROVED,
+    @Query('status') statusQuery: string = ArticleState.APPROVED, // Comma-separated statuses
   ) {
     try {
-      return this.articleService.searchArticles(searchStr, status);
-    } catch {
+      // Split the statusQuery string by commas into an array of statuses
+      const statuses: ArticleState[] = statusQuery.split(',') as ArticleState[];
+  
+      // Pass the search string and the array of statuses to the service
+      return this.articleService.searchArticles(searchStr, statuses);
+    } catch (error) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: 'Missing search',
+          error: 'No articles found or server error',
         },
         HttpStatus.NOT_FOUND,
-        { cause: error },
       );
     }
   }

@@ -16,7 +16,7 @@ export default function ModerationAnalystForm({
   const router = useRouter();
   const [formData, setFormData] = useState<Article | null>(null);
   const [feedback, setFeedback] = useState<string>("");
-  const [analysis, setAnalysis] = useState<string>("");
+  //const [analysis, setAnalysis] = useState<string>(""); < for the analysts' note
   const [decision, setDecision] = useState<"reject" | "approve" | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -53,9 +53,10 @@ export default function ModerationAnalystForm({
     setFeedback(event.target.value);
   };
 
+  /*
   const handleAnalysisChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAnalysis(event.target.value);
-  };
+  };*/
 
   // Handle the decision buttons (for Moderator)
   const handleDecision = (decisionType: "reject" | "approve") => {
@@ -76,10 +77,10 @@ export default function ModerationAnalystForm({
       if (user?.role === "Moderator") {
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
         patchData = { modNote: feedback, status: updatedStatus }; 
-      } else if (user?.role === "Analyst") {
+      } /*else if (user?.role === "Analyst") {
         updatedStatus = "APPROVED"; 
         patchData = { reviewNote: analysis, status: updatedStatus };
-      }
+      }*/
 
       console.log("Sending PATCH request with data:", patchData);
 
@@ -207,14 +208,16 @@ export default function ModerationAnalystForm({
           />
         )}
           {/* Feedback or Analysis TextField */}
+          {user?.role === "Moderator" && (
           <TextField
-          label={user?.role === "Moderator" ? "Feedback" : "Analysis"}
-          value={user?.role === "Moderator" ? feedback : analysis}
-          onChange={user?.role === "Moderator" ? handleFeedbackChange : handleAnalysisChange}
+          label= "Feedback" //{user?.role === "Moderator" ? "Feedback" : "Analysis"}
+          value= {feedback}//{user?.role === "Moderator" ? feedback : analysis}
+          onChange= {handleFeedbackChange}//{user?.role === "Moderator" ? handleFeedbackChange : handleAnalysisChange}
           fullWidth
           multiline
           rows={4}
         />
+          )}
         <Divider />
 
           {user?.role === "Moderator" ? (
