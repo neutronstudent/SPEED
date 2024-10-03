@@ -70,7 +70,7 @@ export default function ModifyStatusForm({
 
   // Handle form submission (Confirm button)
   const handleConfirm = async () => {
-    if (user?.role === "Moderator" && !decision) {
+    if ((user?.role === "Moderator" && !decision) || (user?.role === "Analyst" && !decision)) {
       alert("Please select a decision (Reject or Approve) before confirming.");
       return;
     }
@@ -84,6 +84,7 @@ export default function ModifyStatusForm({
         patchData = { modNote: feedback, status: updatedStatus }; 
       } else if (user?.role === "Analyst") {
         updatedStatus = "APPROVED"; 
+        updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
         patchData = { reviewNote: null, status: updatedStatus }; //have to update this PatchData to analysis when updating the anlysts' note function
       }
 
@@ -102,13 +103,7 @@ export default function ModifyStatusForm({
 
       if (response.ok) {
         console.log("Form submitted successfully");
-        router.push(
-          `/${
-            user?.role === "Moderator"
-              ? "moderation-success"
-              : "analysis-success"
-          }`
-        );
+        router.push("/modify-status-success");
       } else {
         console.error("Failed to submit form");
       }
@@ -169,7 +164,7 @@ export default function ModifyStatusForm({
           )}
         <Divider />
 
-          {user?.role === "Moderator" ? (
+          {user?.role === "Moderator" || user?.role === "Analyst" ? (
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
               {/* Decision Buttons for Moderator */}
               <Button
