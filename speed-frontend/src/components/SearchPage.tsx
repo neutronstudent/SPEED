@@ -20,7 +20,7 @@ const SearchPage: React.FC = () => {
     setError(null);
 
     try {
-      let apiUrl = `${backendUrl}/api/articles/search?status=APPROVED`;
+      let apiUrl = `${backendUrl}/api/articles/search`;
 
       if (user?.role === "Moderator") {
         // Send separate requests for APPROVED and DENIED
@@ -41,6 +41,7 @@ const SearchPage: React.FC = () => {
           throw new Error("Failed to fetch articles");
         }
         const data = await response.json();
+        console.log(data);
         setSearchResults(data);
       }
     } catch (err) {
@@ -58,7 +59,7 @@ const SearchPage: React.FC = () => {
     try {
       let apiUrl = `${backendUrl}/api/articles/search?text=${encodeURIComponent(
         searchQuery
-      )}&status=APPROVED`;
+      )}`;
 
       if (user?.role === "Moderator") {
         const approvedResponse = await fetch(
@@ -94,6 +95,7 @@ const SearchPage: React.FC = () => {
   // Fetch default approved articles when the component mounts
   useEffect(() => {
       fetchDefaultApprovedArticles(); // Fetch default articles
+      console.log(searchResults);
   }, []); // Fetch whenever the user role is available/changes
 
   return (
