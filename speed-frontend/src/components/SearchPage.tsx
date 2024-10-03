@@ -140,7 +140,7 @@ const SearchPage: React.FC = () => {
       {/* Table with Search Results */}
       <ResultsTable
         articles={searchResults}
-        statusColomn={user?.role === "Moderator" || user?.role === "Analyst"}
+        statusColumn={user?.role === "Moderator" || user?.role === "Analyst"}
       />
     </Box>
   );

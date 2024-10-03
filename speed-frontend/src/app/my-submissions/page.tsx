@@ -76,7 +76,7 @@ const MySubmissionPage: React.FC = () => {
 
       {/* Table with Search Results */}
       <ResultsTable
-        statusColomn={true}
+        statusColumn={true}
         articles={searchResults}
         buttonLabel="Edit"
         onClick={handleEdit}
