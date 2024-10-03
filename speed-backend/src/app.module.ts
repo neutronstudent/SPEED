@@ -13,9 +13,10 @@ import { ArticleModule } from './api/article/article.module';
       envFilePath: '.env',
     }),
     MongooseModule.forRoot(process.env.DB_URI),
-    UserModule, ArticleModule],
+    UserModule,
+    ArticleModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule {}

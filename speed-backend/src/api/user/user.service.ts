@@ -8,11 +8,15 @@ import { Model } from 'mongoose';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
+  test(): string {
+    return 'User route testing';
+  }
+
   async findAll(): Promise<User[]> {
     return await this.userModel.find().exec();
   }
 
   async findOne(uid: string): Promise<User> {
-    return await this.userModel.findOne({uid}).exec();
+    return await this.userModel.findOne({ uid }).exec();
   }
 }
