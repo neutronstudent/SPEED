@@ -31,6 +31,11 @@ export default function ModifyStatusForm({
         const data = await response.json();
         console.log("Fetched article data:", data);
         setFormData(data as Article);
+        if (data.status === "APPROVED") {
+          handleDecision("approve");
+        } else if (data.status === "DENIED") {
+          handleDecision("reject");
+        }
       } else {
         console.error("Failed to fetch article data");
       }
@@ -58,7 +63,7 @@ export default function ModifyStatusForm({
     setAnalysis(event.target.value);
   };*/
 
-  // Handle the decision buttons (for Moderator)
+  // Handle the decision buttons
   const handleDecision = (decisionType: "reject" | "approve") => {
     setDecision(decisionType);
   };
@@ -125,7 +130,7 @@ export default function ModifyStatusForm({
       }}
     >
       <h1>
-        {user?.role === "Moderator" ? "Moderation Review" : "Analysis Review"}
+        {"Modify Status"}
       </h1>
       {!formData ? (
         <p>{loading ? "Loading article data..." : "No article data found"}</p>
@@ -142,15 +147,7 @@ export default function ModifyStatusForm({
             width: "100%",
           }}
         >
-          <TextField
-            label="Submission Title"
-            value={formData.title}
-            fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-          <Divider />
+          <h3>{`${formData.title}`}</h3>
           {user?.role === "Analyst" && (
           <TextField
             label="Moderator's Feedback"
