@@ -29,7 +29,7 @@ const ModerationAnalystPage: React.FC = () => {
       }
   
       console.log("Fetching articles with status:", status);
-      const apiUrl = `${backendUrl}/api/articles/status/${status}`;
+      const apiUrl = `${backendUrl}/api/articles?status/${status}`;
       const response = await fetch(apiUrl);
   
       if (!response.ok) {

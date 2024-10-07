@@ -20,15 +20,15 @@ const SearchPage: React.FC = () => {
     setError(null);
 
     try {
-      let apiUrl = `${backendUrl}/api/articles/search`;
+      let apiUrl = `${backendUrl}/api/articles?status=APPROVED`;
 
       if (user?.role === "Moderator") {
         // Send separate requests for APPROVED and DENIED
         const approvedResponse = await fetch(
-          `${backendUrl}/api/articles/search?status=APPROVED`
+          `${backendUrl}/api/articles?status=APPROVED`
         );
         const deniedResponse = await fetch(
-          `${backendUrl}/api/articles/search?status=DENIED`
+          `${backendUrl}/api/articles?status=DENIED`
         );
 
         const approvedArticles = await approvedResponse.json();
@@ -57,18 +57,18 @@ const SearchPage: React.FC = () => {
     setError(null);
 
     try {
-      let apiUrl = `${backendUrl}/api/articles/search?text=${encodeURIComponent(
+      let apiUrl = `${backendUrl}/api/articles?text=${encodeURIComponent(
         searchQuery
       )}`;
 
       if (user?.role === "Moderator") {
         const approvedResponse = await fetch(
-          `${backendUrl}/api/articles/search?text=${encodeURIComponent(
+          `${backendUrl}/api/articles?text=${encodeURIComponent(
             searchQuery
           )}&status=APPROVED`
         );
         const deniedResponse = await fetch(
-          `${backendUrl}/api/articles/search?text=${encodeURIComponent(
+          `${backendUrl}/api/articles?text=${encodeURIComponent(
             searchQuery
           )}&status=DENIED`
         );
