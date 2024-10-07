@@ -4,6 +4,7 @@ import { TextField, Button, Divider, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 import { useRouter } from "next/navigation";
+import GoogleScholarParser from "./GoogleScholarParser";
 
 interface ModerationAnalystFormProps {
   articleUid?: string;
@@ -265,6 +266,7 @@ export default function ModerationAnalystForm({
               </Button>
             </Box>
           ) : null}
+          <GoogleScholarParser article={formData} />
           <Button
             variant="contained"
             color="success"
