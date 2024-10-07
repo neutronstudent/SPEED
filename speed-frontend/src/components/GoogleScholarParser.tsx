@@ -4,7 +4,9 @@ import React from "react";
 
 // takes an article object and generates a google scholar search query
 const GoogleScholarParser = ({ article }: { article: Article }) => {
-  const searchQuery = `${article.title} ${article.authors} ${article.journalName} ${article.yearOfPub}`;
+  const searchQuery = `${article.title} ${article.authors} ${
+    article.journalName
+  } ${article.yearOfPub.getFullYear()}`;
   const googleScholarUrl = `https://scholar.google.com/scholar?q=${encodeURIComponent(
     searchQuery
   )}`;
