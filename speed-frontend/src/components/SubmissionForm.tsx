@@ -35,7 +35,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
   const fetchArticle = async (uid: string) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${uid}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${uid}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -99,7 +99,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     try {
       const response = await fetch(
         article !== "new"
-          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${formData.uid}`
+          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${formData.uid}`
           : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles`,
         {
           method: article !== "new" ? "PUT" : "POST",
@@ -134,7 +134,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${uid}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${uid}`,
         {
           method: "DELETE",
         }

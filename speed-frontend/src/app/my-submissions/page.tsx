@@ -22,7 +22,7 @@ const MySubmissionPage: React.FC = () => {
 
     try {
       //   const apiUrl = `${backendUrl}/api/articles`;
-      const apiUrl = `${backendUrl}/api/articles/submitter/${user?.uid || ""}`;
+      const apiUrl = `${backendUrl}/api/articles?submitter=${user?.uid || ""}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {

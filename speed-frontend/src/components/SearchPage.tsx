@@ -19,7 +19,7 @@ const SearchPage: React.FC = () => {
       setError(null); 
   
       try {
-        const apiUrl = `${backendUrl}/api/articles/search?text=${encodeURIComponent(searchQuery)}`;
+        const apiUrl = `${backendUrl}/api/articles?text=${encodeURIComponent(searchQuery)}`;
         const response = await fetch(apiUrl);
   
         if (!response.ok) {

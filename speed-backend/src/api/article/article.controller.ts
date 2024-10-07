@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put, Query, } from '@nestjs/common';
 import { ArticleService } from "./article.service";
-import { error } from 'console';
+import { error, log } from 'console';
 import { Article, ArticlePatchDto, ArticleState, CreateArticleDto} from './article.schema';
 import { randomUUID } from 'crypto';
 
@@ -9,9 +9,12 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get('/')
-  async findAllMatching() {
+  async findMatching(@Query() params: any) {
     try {
-      return this.articleService.findAll();
+      //if no paramters by default return all
+      //pass paramters to backendx
+        log(params)
+        return this.articleService.find({text: params.text, submitterUid: params.submitter, moderatorUid: params.moderator, analyistUid: params.analyist, status: params.status});
     } catch {
       throw new HttpException(
         {
@@ -24,7 +27,7 @@ export class ArticleController {
     }
   }
 
-  @Get('/id/:uid')
+  @Get('/:uid')
   async findOne(@Param('uid') uid: string) {
     try {
       return this.articleService.findOne(uid);
@@ -41,7 +44,7 @@ export class ArticleController {
   }
 
   //compleatly update data object
-  @Put('/id/:uid')
+  @Put('/:uid')
   async updateArticle(
     @Param('uid') uid: string,
     @Body() articleDto: CreateArticleDto,
@@ -62,7 +65,7 @@ export class ArticleController {
   }
 
   //update important fields
-  @Patch('/id/:uid/')
+  @Patch('/:uid/')
   async patchArticle(@Param('uid') uid: string,  patchDto: ArticlePatchDto) {
     try {
       return this.articleService.updateArticle(uid, patchDto);
@@ -78,98 +81,6 @@ export class ArticleController {
         { cause: error },
       );
 
-    }
-  }
-
-
-
-  //search routes for searching for articles based upon strings and moderators
-  //by default only show approved articles unless query paramater says otherwise
-  @Get('/search')
-  async findText(@Query('text') searchStr: string, @Query('status') status: ArticleState = ArticleState.APPROVED)
-  {
-    try {
-      return this.articleService.searchArticles(searchStr, status);
-    }
-
-    catch {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Missing search',
-        },
-        HttpStatus.NOT_FOUND,
-        { cause: error },
-      );
-    }
-  }
-
-  //get all articles with moderator uid
-  @Get('/moderator/:uid')
-  async findModerator(@Param('uid') uid: string) {
-    try {
-      return this.articleService.searchForModerator(uid);
-    } catch {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'No articles found',
-        },
-        HttpStatus.NOT_FOUND,
-        { cause: error },
-      );
-    }
-  }
-
-  //get all articles with reviewer uid
-  @Get('/analyist/:uid')
-  async findAnalyist(@Param('uid') uid: string) {
-    try {
-      return this.articleService.searchForAnalysist(uid)
-    }
-
-    catch {
-
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'No articles found',
-        },
-        HttpStatus.NOT_FOUND,
-        { cause: error },
-      );
-    }
-  }
-
-  @Get('/submitter/:uid')
-  async findSubmitter(@Param('uid') uid: string) {
-    try {
-      return this.articleService.searchForSubmitter(uid);
-    } catch {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'No articles found',
-        },
-        HttpStatus.NOT_FOUND,
-        { cause: error },
-      );
-    }
-  }
-
-  @Get('/status/:status')
-  async findStatus(@Param('status') status: string) {
-    try {
-      return this.articleService.searchForStatus(status);
-    } catch {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'No articles found',
-        },
-        HttpStatus.NOT_FOUND,
-        { cause: error },
-      );
     }
   }
 
@@ -196,7 +107,7 @@ export class ArticleController {
 
 
 
-  @Delete('/id/:uid')
+  @Delete('/:uid')
   async deleteArticle(@Param('uid') uid: string) {
     try {
       this.articleService.deleteArticle(uid);
