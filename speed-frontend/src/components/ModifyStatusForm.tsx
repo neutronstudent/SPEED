@@ -85,7 +85,7 @@ export default function ModifyStatusForm({
       } else if (user?.role === "Analyst") {
         updatedStatus = "APPROVED"; 
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
-        patchData = { reviewNote: null, status: updatedStatus }; //have to update this PatchData to analysis when updating the anlysts' note function
+        patchData = { reviewNote: feedback, status: updatedStatus };
       }
 
       console.log("Sending PATCH request with data:", patchData);
@@ -154,9 +154,9 @@ export default function ModifyStatusForm({
           {/* Feedback or Analysis TextField */}
           {user?.role === "Moderator" && (
           <TextField
-          label= "Feedback" //{user?.role === "Moderator" ? "Feedback" : "Analysis"}
-          value= {feedback}//{user?.role === "Moderator" ? feedback : analysis}
-          onChange= {handleFeedbackChange}//{user?.role === "Moderator" ? handleFeedbackChange : handleAnalysisChange}
+          label= "Feedback"
+          value= {feedback}
+          onChange= {handleFeedbackChange}
           fullWidth
           multiline
           rows={4}

@@ -86,6 +86,8 @@ const ModerationAnalystPage: React.FC = () => {
         onClick={handleEdit} 
         articles={articles} 
         buttonLabel={user?.role === "Moderator" ? "Moderate" : "Analyse"}
+        statusColumn={true}
+        modifyButton={true}
       />
     </Box>
   );
