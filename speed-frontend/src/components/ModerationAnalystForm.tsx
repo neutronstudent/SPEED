@@ -94,7 +94,7 @@ export default function ModerationAnalystForm({
         patchData = { ...patchData, modNote: feedback, status: updatedStatus };
       } else if (user?.role === "Analyst") {
         updatedStatus = "APPROVED";
-        patchData = { ...patchData, reviewNote: null, status: updatedStatus };
+        patchData = { ...patchData, reviewNote: feedback, status: updatedStatus };
       }
 
       console.log("Sending PATCH request with data:", patchData);
@@ -231,9 +231,12 @@ export default function ModerationAnalystForm({
           <Divider />
           {user?.role === "Analyst" && (
             <TextField
-              label="Moderator's Feedback"
-              value={formData.modNote || "No feedback from moderator"}
+              label="Feedback"
+              value={feedback}
+              onChange={handleFeedbackChange}
               fullWidth
+              multiline
+              rows={4}
             />
           )}
           {user?.role === "Moderator" && (
