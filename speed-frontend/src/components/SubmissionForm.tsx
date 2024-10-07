@@ -1,6 +1,6 @@
 import { Article } from "@/types";
 import { TextField, Button, Divider, Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 import { useRouter } from "next/navigation";
 import DeleteArticle from "./DeletionDialog";
@@ -20,7 +20,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     title: "",
     authors: "",
     journalName: "",
-    yearOfPub: 0,
+    yearOfPub: new Date(),
     vol: "",
     pages: "",
     doi: "",
@@ -30,6 +30,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     submitterUid: "",
     status: "",
   });
+  const [tempYear, setTempYear] = useState("");
 
   // function to fetch article data
   const fetchArticle = async (uid: string) => {
@@ -39,8 +40,13 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
       );
       if (response.ok) {
         const data = await response.json();
-        data.yearOfPub = new Date(data.yearOfPub).getFullYear();
-        setFormData(data as Article);
+        console.log("Article data fetched successfully", data);
+        // Convert yearOfPub from string to Date object
+        setTempYear(new Date(data.yearOfPub).getFullYear().toString());
+        setFormData({
+          ...data,
+          yearOfPub: new Date(data.yearOfPub),
+        });
       } else {
         console.error("Failed to fetch article data");
         setError("Article not found");
@@ -61,7 +67,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
           title: "",
           authors: "",
           journalName: "",
-          yearOfPub: 0,
+          yearOfPub: new Date(),
           vol: "",
           pages: "",
           doi: "",
@@ -76,6 +82,11 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
       fetchArticle(article);
     }
   }, [article]);
+
+  // console logs for date object
+  useEffect(() => {
+    console.log(tempYear);
+  }, [tempYear]);
 
   // Handle form input changes
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,10 +103,26 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
       console.error("User not logged in");
       return;
     }
-    setFormData({
+
+    if(tempYear.length !== 4) {
+      setError("Year of publication must be 4 digits long");
+      return;
+    }
+    if(tempYear.match(/[^0-9]/)) {
+      setError("Year of publication must be a number");
+      return;
+    }
+    if(tempYear < "1700" || tempYear > new Date().getFullYear().toString()) {
+      setError("Year of publication must be between 1000 and current year");
+      return;
+    }
+
+    const updatedFormData = {
       ...formData,
+      yearOfPub: new Date(tempYear),
       submitterUid: user.uid,
-    });
+    };
+
     try {
       const response = await fetch(
         article !== "new"
@@ -106,11 +133,13 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(updatedFormData),
         }
       );
+
       if (response.ok) {
         console.log("Article submitted successfully");
+        // console.log(updatedFormData);
         router.push("/submission-success");
       } else {
         console.error("Failed to submit article");
@@ -218,12 +247,13 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
             id="yearOfPub"
             name="yearOfPub"
             label="Year of Publication"
-            type="number"
             variant="outlined"
             required
             fullWidth
-            value={formData.yearOfPub}
-            onChange={handleChange}
+            value={tempYear}
+            onChange={(event) => {
+              setTempYear(event.target.value);
+            }}
           />
           <TextField
             id="vol"
@@ -293,7 +323,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
               {article !== "new" ? "Update Submission" : "Submit Article"}
             </Button>
             {article !== "new" && (
-              <>
+              <Box>
                 <DeleteArticle
                   article={formData as Article}
                   open={deleteConfirmationOpen}
@@ -306,7 +336,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
                 >
                   Delete Submission
                 </Button>
-              </>
+              </Box>
             )}
           </Box>
         </Box>

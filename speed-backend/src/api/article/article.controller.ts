@@ -1,7 +1,9 @@
+
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Put, Query, } from '@nestjs/common';
 import { ArticleService } from "./article.service";
 import { error, log } from 'console';
 import { Article, ArticlePatchDto, ArticleState, CreateArticleDto} from './article.schema';
+
 import { randomUUID } from 'crypto';
 
 @Controller('api/articles')
@@ -15,6 +17,7 @@ export class ArticleController {
       //pass paramters to backendx
         log(params)
         return this.articleService.find({text: params.text, submitterUid: params.submitter, moderatorUid: params.moderator, analyistUid: params.analyist, status: params.status});
+      
     } catch {
       throw new HttpException(
         {
@@ -51,6 +54,8 @@ export class ArticleController {
   ) {
     try {
       const article = Object.assign(new Article(), articleDto);
+      article.yearOfPub = new Date(article.yearOfPub);
+      console.log(article);
       return this.articleService.updateArticle(uid, article);
     } catch {
       throw new HttpException(
@@ -59,29 +64,9 @@ export class ArticleController {
           error: 'Unable to update article',
         },
         HttpStatus.NOT_ACCEPTABLE,
-        { cause: error },
       );
     }
   }
-
-  //update important fields
-  @Patch('/:uid/')
-  async patchArticle(@Param('uid') uid: string,  patchDto: ArticlePatchDto) {
-    try {
-      return this.articleService.updateArticle(uid, patchDto);
-    }
-
-    catch {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Article not found',
-        },
-        HttpStatus.NOT_FOUND,
-        { cause: error },
-      );
-
-    }
   }
 
   @Post('/')
@@ -105,15 +90,12 @@ export class ArticleController {
     }
   }
 
-
-
   @Delete('/:uid')
   async deleteArticle(@Param('uid') uid: string) {
     try {
       this.articleService.deleteArticle(uid);
-      
-      return HttpStatus.ACCEPTED
 
+      return HttpStatus.ACCEPTED;
     } catch {
       throw new HttpException(
         {
@@ -122,6 +104,29 @@ export class ArticleController {
         },
         HttpStatus.NOT_ACCEPTABLE,
         { cause: error },
+      );
+    }
+  }
+
+  @Patch('/:uid')
+  async updatePartially(
+    @Param('uid') uid: string,
+    @Body() patchDto: ArticlePatchDto,
+  ) {
+    console.log('Received patchDto:', patchDto);
+    try {
+      const updatedArticle = await this.articleService.updatePartially(
+        uid,
+        patchDto,
+      );
+      return updatedArticle;
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Article not found or failed to update',
+        },
+        HttpStatus.NOT_FOUND,
       );
     }
   }

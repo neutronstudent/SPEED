@@ -25,6 +25,7 @@ describe("Sidenav component", () => {
   const mockPush = jest.fn();
   const mockSetUser = jest.fn();
 
+  // Mock the useRouter and useUser hooks
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({
       push: mockPush,
@@ -35,6 +36,7 @@ describe("Sidenav component", () => {
       setUser: mockSetUser,
     });
 
+    // Clear all mocks after each test
     mockPush.mockClear();
     mockSetUser.mockClear();
   });
@@ -59,7 +61,7 @@ describe("Sidenav component", () => {
 
     // Click on "Submit Article" link
     fireEvent.click(screen.getByText("Submit Article"));
-    expect(mockPush).toHaveBeenCalledWith("/submit-article");
+    expect(mockPush).toHaveBeenCalledWith("/submit?uid=new");
 
     // Click on "My Submissions" link
     fireEvent.click(screen.getByText("My Submissions"));
@@ -78,7 +80,7 @@ describe("Sidenav component", () => {
 
     // Click on "Moderation" link
     fireEvent.click(screen.getByText("Moderation"));
-    expect(mockPush).toHaveBeenCalledWith("/moderation");
+    expect(mockPush).toHaveBeenCalledWith("/moderator-analyst");
   });
 
   test("renders analysis link for Analyst role", () => {
@@ -93,7 +95,7 @@ describe("Sidenav component", () => {
 
     // Click on "Analysis" link
     fireEvent.click(screen.getByText("Analysis"));
-    expect(mockPush).toHaveBeenCalledWith("/analysis");
+    expect(mockPush).toHaveBeenCalledWith("/moderator-analyst");
   });
 
   test("handles logout properly", async () => {

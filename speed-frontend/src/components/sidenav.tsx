@@ -50,6 +50,14 @@ const Sidenav: React.FC<SidenavProps> = ({
     }
   };
 
+  const handleModerationOrAnalysis = () => {
+    if (user?.role === "Moderator") {
+      handleNavigation("/moderation");
+    } else if (user?.role === "Analyst") {
+      handleNavigation("/analysis");
+    }
+  };
+
   // Side navigation list
   const DrawerList = (
     <Box sx={{ width: drawerWidth }} role="presentation">
@@ -66,20 +74,13 @@ const Sidenav: React.FC<SidenavProps> = ({
             </ListItemButton>
           </ListItem>
         )}
-        {user?.role === "Moderator" && (
-          <ListItem>
-            <ListItemButton onClick={() => handleNavigation("/moderation")}>
-              <ListItemText primary="Moderation" />
-            </ListItemButton>
-          </ListItem>
-        )}
-        {user?.role === "Analyst" && (
-          <ListItem>
-            <ListItemButton onClick={() => handleNavigation("/analysis")}>
-              <ListItemText primary="Analysis" />
-            </ListItemButton>
-          </ListItem>
-        )}
+        {(user?.role === "Moderator" || user?.role === "Analyst") && (
+  <ListItem>
+    <ListItemButton onClick={() => handleNavigation("/moderator-analyst")}>
+      <ListItemText primary={user?.role === "Moderator" ? "Moderation" : "Analysis"} />
+    </ListItemButton>
+  </ListItem>
+)}
       </List>
       <Divider />
       {user?.role !== undefined && (

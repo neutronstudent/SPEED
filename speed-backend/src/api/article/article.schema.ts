@@ -60,7 +60,7 @@ export class Article {
   reviewNote: string;
 
   @Prop({required: false})
-  modNoter: string;
+  modNote: string;
 
 }
 
@@ -81,10 +81,10 @@ export class CreateArticleDto {
 
 export class ArticlePatchDto {
   moderatorUid?: string
-  analyistUid?: string;
+  analystUid?: string;
   status?: ArticleState;
   reviewNote?: string;
-  modNoter?: string;
+  modNote?: string;
 }
 
 export type ArticleDocument = HydratedDocument<Article>;
