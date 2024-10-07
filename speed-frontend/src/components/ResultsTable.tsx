@@ -22,6 +22,7 @@ interface ResultsTableProps {
   onClick?: (uid: string) => void;
   buttonLabel?: string;
   statusColumn?: boolean;
+  modifyButton?: boolean;
 }
 
 const ResultsTable = ({
@@ -29,6 +30,7 @@ const ResultsTable = ({
   onClick,
   buttonLabel,
   statusColumn,
+  modifyButton,
 }: ResultsTableProps) => {
   const [expandedArticleUid, setExpandedArticleUid] = useState<string | null>(
     null
@@ -99,7 +101,15 @@ const ResultsTable = ({
                   {statusColumn && (
                     <TableCell align="center">
                       {getArticleStatus(article.status)}
-                      <Button variant="outlined" size="small" onClick={() => handleModify(article.uid || "")} sx={{m:0.5}}>Modify</Button>
+                      {statusColumn && modifyButton ? (
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => handleModify(article.uid || "")}
+                          sx={{ m: 0.5 }}>
+                          Modify
+                        </Button>
+                      ) : null}
                     </TableCell>
                   )}
                   {/*Button for Article Details */}
