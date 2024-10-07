@@ -20,7 +20,7 @@ const SearchPage: React.FC = () => {
     setError(null);
 
     try {
-      let apiUrl = `${backendUrl}/api/articles/`;
+      let apiUrl = `${backendUrl}/api/articles?status=APPROVED`;
 
       if (user?.role === "Moderator") {
         // Send separate requests for APPROVED and DENIED
