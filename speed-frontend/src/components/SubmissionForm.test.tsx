@@ -37,14 +37,12 @@ jest.mock("./UserContext", () => ({
 }));
 
 // Mock the fetch API
-(global.fetch as jest.Mock)
-  .mockResolvedValueOnce({
-    ok: true,
+global.fetch = jest.fn(() =>
+  Promise.resolve({
     json: () => Promise.resolve(mockArticle),
-  })
-  .mockResolvedValueOnce({
     ok: true,
-  });
+  })
+) as jest.Mock;
 
 describe("SubmissionForm component", () => {
   afterEach(() => {
