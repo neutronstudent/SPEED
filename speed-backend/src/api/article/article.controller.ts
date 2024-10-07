@@ -67,7 +67,6 @@ export class ArticleController {
       );
     }
   }
-  }
 
   @Post('/')
   async createArticle(@Body() articleDto: CreateArticleDto) {
