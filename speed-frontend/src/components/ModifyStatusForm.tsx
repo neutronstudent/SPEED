@@ -154,9 +154,9 @@ export default function ModifyStatusForm({
           {/* Feedback or Analysis TextField */}
           {user?.role === "Moderator" && (
           <TextField
-          label= "Feedback" //{user?.role === "Moderator" ? "Feedback" : "Analysis"}
-          value= {feedback}//{user?.role === "Moderator" ? feedback : analysis}
-          onChange= {handleFeedbackChange}//{user?.role === "Moderator" ? handleFeedbackChange : handleAnalysisChange}
+          label= "Feedback"
+          value= {feedback}
+          onChange= {handleFeedbackChange}
           fullWidth
           multiline
           rows={4}

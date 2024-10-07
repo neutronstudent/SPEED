@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signOut, signInWithEmailAndPassword } from 'firebase/auth';
-
 import firebaseConfig from '@/secrets/secrets.firebase';
 
 // Initialize Firebase app and auth once
