@@ -5,7 +5,7 @@ export enum ArticleState {
   NEW = 'NEW',
   MODERATED = 'MODERATED',
   APPROVED = 'APPROVED',
-  DENIED = 'DENIED'
+  DENIED = 'DENIED',
 }
 
 @Schema()
@@ -17,7 +17,6 @@ export class Article {
   title: string;
 
   @Prop({ required: true })
-
   authors: string;
 
   @Prop({ required: false })
@@ -50,18 +49,22 @@ export class Article {
   @Prop({ required: false })
   analyistUid: string;
 
-  @Prop({type: String, enum: ArticleState, default: ArticleState.NEW, required: true })
+  @Prop({
+    type: String,
+    enum: ArticleState,
+    default: ArticleState.NEW,
+    required: true,
+  })
   status: ArticleState;
 
   @Prop({ required: true })
   submitterUid: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   reviewNote: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   modNote: string;
-
 }
 
 export class CreateArticleDto {
@@ -80,9 +83,10 @@ export class CreateArticleDto {
 }
 
 export class ArticlePatchDto {
-  moderatorUid?: string
+  moderatorUid?: string;
   analystUid?: string;
   status?: ArticleState;
+  statusNote?: string;
   reviewNote?: string;
   modNote?: string;
 }

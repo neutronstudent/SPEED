@@ -14,8 +14,9 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "./UserContext";
 
 interface ResultsTableProps {
   articles: Article[];
@@ -32,6 +33,7 @@ const ResultsTable = ({
   statusColumn,
   modifyButton,
 }: ResultsTableProps) => {
+  const { user } = useUser();
   const [expandedArticleUid, setExpandedArticleUid] = useState<string | null>(
     null
   );
@@ -67,6 +69,18 @@ const ResultsTable = ({
 
   const handleRowClick = (uid: string) => {
     setExpandedArticleUid((prevUid) => (prevUid === uid ? null : uid));
+  };
+
+  // Function to render the details of the article
+  const renderDetail = (label: string, value?: string) => {
+    if (!value) {
+      return null;
+    }
+    return (
+      <Typography variant="body1" gutterBottom>
+        <strong>{label}:</strong> {value}
+      </Typography>
+    );
   };
 
   return (
@@ -106,7 +120,8 @@ const ResultsTable = ({
                           variant="outlined"
                           size="small"
                           onClick={() => handleModify(article.uid || "")}
-                          sx={{ m: 0.5 }}>
+                          sx={{ m: 0.5 }}
+                        >
                           Modify
                         </Button>
                       ) : null}
@@ -126,6 +141,11 @@ const ResultsTable = ({
                       <Button
                         variant="contained"
                         color="primary"
+                        disabled={
+                          article.status.toUpperCase() !== "NEW" &&
+                          user?.role !== "Moderator" &&
+                          user?.role !== "Analyst"
+                        }
                         onClick={() => onClick && onClick(article.uid || "")}
                       >
                         {buttonLabel}
@@ -147,24 +167,13 @@ const ResultsTable = ({
                         <Typography variant="h6" gutterBottom component="div">
                           Article Details
                         </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>SEP:</strong> {article.SEP}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Authors:</strong> {article.authors}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Pages:</strong> {article.pages}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Volume:</strong> {article.vol}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Claim:</strong> {article.claim}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Result:</strong> {article.result}
-                        </Typography>
+                        {renderDetail("Moderation Note", article.modNote || "")}
+                        {renderDetail("SEP", article.SEP)}
+                        {renderDetail("Authors", article.authors)}
+                        {renderDetail("Pages", article.pages)}
+                        {renderDetail("Volume", article.vol)}
+                        {renderDetail("Claim", article.claim)}
+                        {renderDetail("Result", article.result)}
                       </Box>
                     </Collapse>
                   </TableCell>
