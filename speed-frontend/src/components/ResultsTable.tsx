@@ -1,5 +1,5 @@
 import { Article } from "@/types";
-import { ExpandMore } from "@mui/icons-material";
+import { ErrorOutline, ExpandMore } from "@mui/icons-material";
 import {
   Paper,
   Table,
@@ -13,6 +13,7 @@ import {
   Collapse,
   Typography,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -114,17 +115,26 @@ const ResultsTable = ({
                   </TableCell>
                   {statusColumn && (
                     <TableCell align="center">
-                      {getArticleStatus(article.status)}
-                      {statusColumn && modifyButton ? (
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => handleModify(article.uid || "")}
-                          sx={{ m: 0.5 }}
-                        >
-                          Modify
-                        </Button>
-                      ) : null}
+                      <Box display="flex" alignItems="center">
+                        {article.modNote && (
+                          <Tooltip title={article.modNote}>
+                            <IconButton size="small">
+                              <ErrorOutline color="warning" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                        {getArticleStatus(article.status)}
+                        {statusColumn && modifyButton ? (
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleModify(article.uid || "")}
+                            sx={{ m: 0.5 }}
+                          >
+                            Modify
+                          </Button>
+                        ) : null}
+                      </Box>
                     </TableCell>
                   )}
                   {/*Button for Article Details */}
