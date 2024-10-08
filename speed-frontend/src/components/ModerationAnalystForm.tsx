@@ -24,7 +24,7 @@ export default function ModerationAnalystForm({
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${uid}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${uid}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -100,7 +100,7 @@ export default function ModerationAnalystForm({
       console.log("Sending PATCH request with data:", patchData);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${articleUid}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${articleUid}`,
         {
           method: "PATCH",
           headers: {

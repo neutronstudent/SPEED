@@ -79,7 +79,7 @@ describe('ModifyStatusForm component', () => {
     // Ensure fetch was called with the correct data
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/1`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/1`,
         expect.objectContaining({
           method: 'PATCH',
           body: JSON.stringify({
