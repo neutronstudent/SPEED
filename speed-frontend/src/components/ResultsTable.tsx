@@ -13,6 +13,7 @@ import {
   Collapse,
   Typography,
   IconButton,
+  TableSortLabel,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -74,11 +75,11 @@ const ResultsTable = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="center">Title</TableCell>
-            <TableCell align="center">DOI</TableCell>
-            <TableCell align="center">Journal Name</TableCell>
-            <TableCell align="center">Year of Publication</TableCell>
-            {statusColumn && <TableCell align="center">Status</TableCell>}
+            <TableCell align="center"><TableSortLabel>Title</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel>DOI</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel>Journal Name</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel>Year of Publication</TableSortLabel></TableCell>
+            {statusColumn && <TableCell align="center"><TableSortLabel>Status</TableSortLabel></TableCell>}
             <TableCell align="center">Details</TableCell>
             {buttonLabel && <TableCell align="center">Actions</TableCell>}
           </TableRow>
