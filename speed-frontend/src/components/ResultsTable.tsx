@@ -82,9 +82,9 @@ const ResultsTable = ({
     }
     const sortedArticles = articles.sort((a, b) => {
       if (sortedOrder === "asc") {
-        return a.title.localeCompare(b.title);
+        return a[column as keyof Article]?.toString().localeCompare(b[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
       } else {
-        return b.title.localeCompare(a.title);
+        return b[column as keyof Article]?.toString().localeCompare(a[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
       }
     });
     setSortedArticles(sortedArticles);
