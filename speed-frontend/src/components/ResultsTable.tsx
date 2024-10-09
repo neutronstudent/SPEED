@@ -33,6 +33,9 @@ const ResultsTable = ({
   statusColumn,
   modifyButton,
 }: ResultsTableProps) => {
+  const [sortedArticles, setSortedArticles] = useState<Article[]>(articles);
+  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
+  const [sortedOrder, setSortedOrder] = useState<"asc" | "desc">("asc");
   const [expandedArticleUid, setExpandedArticleUid] = useState<string | null>(
     null
   );
@@ -70,12 +73,29 @@ const ResultsTable = ({
     setExpandedArticleUid((prevUid) => (prevUid === uid ? null : uid));
   };
 
+  const sortColumn = (column: string) => {
+    if (sortedColumn === column) {
+      setSortedOrder(sortedOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortedColumn(column);
+      setSortedOrder("asc");
+    }
+    const sortedArticles = articles.sort((a, b) => {
+      if (sortedOrder === "asc") {
+        return a.title.localeCompare(b.title);
+      } else {
+        return b.title.localeCompare(a.title);
+      }
+    });
+    setSortedArticles(sortedArticles);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="center"><TableSortLabel>Title</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "title"} onClick={() => sortColumn("title")}>Title</TableSortLabel></TableCell>
             <TableCell align="center"><TableSortLabel>DOI</TableSortLabel></TableCell>
             <TableCell align="center"><TableSortLabel>Journal Name</TableSortLabel></TableCell>
             <TableCell align="center"><TableSortLabel>Year of Publication</TableSortLabel></TableCell>
