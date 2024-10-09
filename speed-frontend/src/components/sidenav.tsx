@@ -113,6 +113,11 @@ const Sidenav: React.FC<SidenavProps> = ({
               <ListItemText primary="Login" />
             </ListItemButton>
           </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => handleNavigation("/signup")}>
+              <ListItemText primary="Sign Up" />
+            </ListItemButton>
+          </ListItem>
         </List>
       )}
       <Divider />
