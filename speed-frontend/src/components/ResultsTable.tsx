@@ -99,9 +99,9 @@ const ResultsTable = ({
         <TableHead>
           <TableRow>
             <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "title"} onClick={() => sortColumn("title")}>Title</TableSortLabel></TableCell>
-            <TableCell align="center"><TableSortLabel>DOI</TableSortLabel></TableCell>
-            <TableCell align="center"><TableSortLabel>Journal Name</TableSortLabel></TableCell>
-            <TableCell align="center"><TableSortLabel>Year of Publication</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "doi"} onClick={() => sortColumn("doi")}>DOI</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "journalName"} onClick={() => sortColumn("journalName")}>Journal Name</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "yearOfPub"} onClick={() => sortColumn("yearOfPub")}>Year of Publication</TableSortLabel></TableCell>
             {statusColumn && <TableCell align="center"><TableSortLabel>Status</TableSortLabel></TableCell>}
             <TableCell align="center">Details</TableCell>
             {buttonLabel && <TableCell align="center">Actions</TableCell>}
