@@ -4,6 +4,7 @@ import { Box, Button, Typography } from "@mui/material";
 import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
 import { useRouter } from "next/navigation";
+import { Article } from "@/types";
 
 const ModerationAnalystPage: React.FC = () => {
   const { user } = useUser();
@@ -60,12 +61,56 @@ const ModerationAnalystPage: React.FC = () => {
     }
   }, [user, fetchArticles]);
 
-  // Navigate to the appropriate page depending on the user's role
-  const handleEdit = (uid: string) => {
+  // React node Action button depending on the role
+  const actionButton = (article: Article) => {
     if (user?.role === "Moderator") {
-      router.push(`/moderation?uid=${uid}`);
+      if (article.status === "DENIED" || article.status === "APPROVED") {
+        return (
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => router.push(`/modify-status?uid=${article.uid}`)}
+            sx={{ m: 0.5 }}
+          >
+            Modify
+          </Button>
+        );
+      }
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            router.push(`/moderation?uid=${article.uid}`);
+          }}
+        >
+          Moderate
+        </Button>
+      );
     } else if (user?.role === "Analyst") {
-      router.push(`/analysis?uid=${uid}`);
+      if (article.status === "DENIED" || article.status === "APPROVED") {
+        return (
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => router.push(`/modify-status?uid=${article.uid}`)}
+            sx={{ m: 0.5 }}
+          >
+            Modify
+          </Button>
+        );
+      }
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            router.push(`/analysis?uid=${article.uid}`);
+          }}
+        >
+          Analyse
+        </Button>
+      );
     }
   };
 
@@ -117,9 +162,8 @@ const ModerationAnalystPage: React.FC = () => {
 
       {/* Table with Search Results */}
       <ResultsTable
-        onClick={handleEdit}
         articles={articles}
-        buttonLabel={user?.role === "Moderator" ? "Moderate" : "Analyse"}
+        actionButton={actionButton}
         statusColumn={true}
         modifyButton={true}
       />

@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import ResultsTable from "./ResultsTable";
 import { useUser } from "./UserContext"; // Assuming you have a UserContext to get user role
+import { Article } from "@/types";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 0; // Space reserved for the sidenav
 
 const SearchPage: React.FC = () => {
   const { user } = useUser(); // Get the user and their role
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -82,6 +85,22 @@ const SearchPage: React.FC = () => {
     console.log(searchResults);
   }, [user]); // Fetch whenever the user role is available/changes
 
+  const modifyStatus = (article: Article) => {
+    if (user?.role === "Moderator" || user?.role === "Analyst") {
+      return (
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => router.push(`/modify-status?uid=${article.uid}`)}
+          sx={{ m: 0.5 }}
+        >
+          Modify
+        </Button>
+      );
+    }
+    return null;
+  };
+
   return (
     <Box
       component="main"
@@ -126,6 +145,7 @@ const SearchPage: React.FC = () => {
       {/* Table with Search Results */}
       <ResultsTable
         articles={searchResults}
+        actionButton={user?.role === "Moderator" || user?.role === "Analyst" ? modifyStatus : undefined}
         statusColumn={user?.role === "Moderator" || user?.role === "Analyst"}
       />
     </Box>
