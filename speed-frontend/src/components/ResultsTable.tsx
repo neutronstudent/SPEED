@@ -73,15 +73,18 @@ const ResultsTable = ({
     setExpandedArticleUid((prevUid) => (prevUid === uid ? null : uid));
   };
 
-  const sortColumn = (column: string) => {
+  const sortColumn = async (column: string) => {
+    let state = "asc"
     if (sortedColumn === column) {
+      state = sortedOrder === "asc" ? "desc" : "asc";
       setSortedOrder(sortedOrder === "asc" ? "desc" : "asc");
+       
     } else {
       setSortedColumn(column);
       setSortedOrder("asc");
     }
     const sortedArticles = articles.sort((a, b) => {
-      if (sortedOrder === "asc") {
+      if (state === "asc") {
         return a[column as keyof Article]?.toString().localeCompare(b[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
       } else {
         return b[column as keyof Article]?.toString().localeCompare(a[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
