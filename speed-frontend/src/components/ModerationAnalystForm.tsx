@@ -260,6 +260,7 @@ export default function ModerationAnalystForm({
             />
           )}
           <Divider />
+          <GoogleScholarParser article={formData} />
           {user?.role === "Moderator" ? (
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
               <Button
@@ -278,7 +279,6 @@ export default function ModerationAnalystForm({
               </Button>
             </Box>
           ) : null}
-          <GoogleScholarParser article={formData} />
           <Button
             variant="contained"
             color="success"
