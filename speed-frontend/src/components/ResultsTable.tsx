@@ -102,7 +102,7 @@ const ResultsTable = ({
             <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "doi"} onClick={() => sortColumn("doi")}>DOI</TableSortLabel></TableCell>
             <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "journalName"} onClick={() => sortColumn("journalName")}>Journal Name</TableSortLabel></TableCell>
             <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "yearOfPub"} onClick={() => sortColumn("yearOfPub")}>Year of Publication</TableSortLabel></TableCell>
-            {statusColumn && <TableCell align="center"><TableSortLabel>Status</TableSortLabel></TableCell>}
+            {statusColumn && <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "status"} onClick={() => sortColumn("status")}>Status</TableSortLabel></TableCell>}
             <TableCell align="center">Details</TableCell>
             {buttonLabel && <TableCell align="center">Actions</TableCell>}
           </TableRow>
