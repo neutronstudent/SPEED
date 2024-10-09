@@ -20,30 +20,14 @@ const SearchPage: React.FC = () => {
     setError(null);
 
     try {
-      let apiUrl = `${backendUrl}/api/articles?status=APPROVED`;
-
-      if (user?.role === "Moderator") {
-        // Send separate requests for APPROVED and DENIED
-        const approvedResponse = await fetch(
-          `${backendUrl}/api/articles?status=APPROVED`
-        );
-        const deniedResponse = await fetch(
-          `${backendUrl}/api/articles?status=DENIED`
-        );
-
-        const approvedArticles = await approvedResponse.json();
-        const deniedArticles = await deniedResponse.json();
-
-        setSearchResults([...approvedArticles, ...deniedArticles]);
-      } else {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error("Failed to fetch articles");
-        }
-        const data = await response.json();
-        console.log(data);
-        setSearchResults(data);
+      const apiUrl = `${backendUrl}/api/articles?status=APPROVED`;
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error("Failed to fetch articles");
       }
+      const data = await response.json();
+      console.log(data);
+      setSearchResults(data);
     } catch (err) {
       setError("No articles found or server error");
     } finally {
@@ -94,9 +78,9 @@ const SearchPage: React.FC = () => {
 
   // Fetch default approved articles when the component mounts
   useEffect(() => {
-      fetchDefaultApprovedArticles(); // Fetch default articles
-      console.log(searchResults);
-  }, []); // Fetch whenever the user role is available/changes
+    fetchDefaultApprovedArticles(); // Fetch default articles
+    console.log(searchResults);
+  }, [user]); // Fetch whenever the user role is available/changes
 
   return (
     <Box
