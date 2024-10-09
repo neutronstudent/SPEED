@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import GoogleScholarParser from "./GoogleScholarParser";
 
 interface ModerationAnalystFormProps {
-  articleUid?: string;
+  articleUid: string;
 }
 
 export default function ModerationAnalystForm({
@@ -28,8 +28,9 @@ export default function ModerationAnalystForm({
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${uid}`
       );
       if (response.ok) {
-        const data = await response.json();
+        let data = await response.json();
         console.log("Fetched article data:", data);
+        data.yearOfPub = new Date(data.yearOfPub);
         setFormData(data as Article);
       } else {
         console.error("Failed to fetch article data");
@@ -50,21 +51,25 @@ export default function ModerationAnalystForm({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    
+
     // Special handling for yearOfPub to convert it to a Date
     if (name === "yearOfPub") {
-      setFormData((prevData) => 
-        prevData ? {
-          ...prevData,
-          [name]: new Date(value), 
-        } : null
+      setFormData((prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              [name]: new Date(value),
+            }
+          : null
       );
     } else {
-      setFormData((prevData) => 
-        prevData ? {
-          ...prevData,
-          [name]: value,
-        } : null
+      setFormData((prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              [name]: value,
+            }
+          : null
       );
     }
   };
@@ -88,14 +93,18 @@ export default function ModerationAnalystForm({
 
     try {
       let updatedStatus = "";
-      let patchData: any = { ...formData }; 
+      let patchData: any = { ...formData };
 
       if (user?.role === "Moderator") {
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
         patchData = { ...patchData, modNote: feedback, status: updatedStatus };
       } else if (user?.role === "Analyst") {
         updatedStatus = "APPROVED";
-        patchData = { ...patchData, reviewNote: feedback, status: updatedStatus };
+        patchData = {
+          ...patchData,
+          reviewNote: feedback,
+          status: updatedStatus,
+        };
       }
 
       console.log("Sending PATCH request with data:", patchData);
@@ -182,7 +191,7 @@ export default function ModerationAnalystForm({
           <TextField
             label="Year of Publication"
             name="yearOfPub"
-            value={formData.yearOfPub.toString()}
+            value={formData.yearOfPub.getFullYear()}
             fullWidth
             onChange={handleChange}
           />

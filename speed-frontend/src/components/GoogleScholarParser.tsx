@@ -6,7 +6,7 @@ import React from "react";
 const GoogleScholarParser = ({ article }: { article: Article }) => {
   const searchQuery = `${article.title} ${article.authors} ${
     article.journalName
-  } ${article.yearOfPub.getFullYear()}`;
+  } ${new Date(article.yearOfPub).getFullYear()}`;
   const googleScholarUrl = `https://scholar.google.com/scholar?q=${encodeURIComponent(
     searchQuery
   )}`;
