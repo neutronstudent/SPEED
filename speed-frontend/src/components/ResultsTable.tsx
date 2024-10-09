@@ -13,6 +13,7 @@ import {
   Collapse,
   Typography,
   IconButton,
+  TableSortLabel,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -32,6 +33,9 @@ const ResultsTable = ({
   statusColumn,
   modifyButton,
 }: ResultsTableProps) => {
+  const [sortedArticles, setSortedArticles] = useState<Article[]>(articles);
+  const [sortedColumn, setSortedColumn] = useState<string | null>(null);
+  const [sortedOrder, setSortedOrder] = useState<"asc" | "desc">("asc");
   const [expandedArticleUid, setExpandedArticleUid] = useState<string | null>(
     null
   );
@@ -69,16 +73,36 @@ const ResultsTable = ({
     setExpandedArticleUid((prevUid) => (prevUid === uid ? null : uid));
   };
 
+  const sortColumn = async (column: string) => {
+    let state = "asc"
+    if (sortedColumn === column) {
+      state = sortedOrder === "asc" ? "desc" : "asc";
+      setSortedOrder(sortedOrder === "asc" ? "desc" : "asc");
+       
+    } else {
+      setSortedColumn(column);
+      setSortedOrder("asc");
+    }
+    const sortedArticles = articles.sort((a, b) => {
+      if (state === "asc") {
+        return a[column as keyof Article]?.toString().localeCompare(b[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
+      } else {
+        return b[column as keyof Article]?.toString().localeCompare(a[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
+      }
+    });
+    setSortedArticles(sortedArticles);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="center">Title</TableCell>
-            <TableCell align="center">DOI</TableCell>
-            <TableCell align="center">Journal Name</TableCell>
-            <TableCell align="center">Year of Publication</TableCell>
-            {statusColumn && <TableCell align="center">Status</TableCell>}
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "title"} onClick={() => sortColumn("title")}>Title</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "doi"} onClick={() => sortColumn("doi")}>DOI</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "journalName"} onClick={() => sortColumn("journalName")}>Journal Name</TableSortLabel></TableCell>
+            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "yearOfPub"} onClick={() => sortColumn("yearOfPub")}>Year of Publication</TableSortLabel></TableCell>
+            {statusColumn && <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "status"} onClick={() => sortColumn("status")}>Status</TableSortLabel></TableCell>}
             <TableCell align="center">Details</TableCell>
             {buttonLabel && <TableCell align="center">Actions</TableCell>}
           </TableRow>

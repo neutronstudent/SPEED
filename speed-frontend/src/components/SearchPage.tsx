@@ -95,7 +95,7 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     fetchDefaultApprovedArticles(); // Fetch default articles
     console.log(searchResults);
-  }, []); // Fetch whenever the user role is available/changes
+  }, [user]); // Fetch whenever the user role is available/changes
 
   return (
     <Box
