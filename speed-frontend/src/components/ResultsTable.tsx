@@ -1,5 +1,5 @@
 import { Article } from "@/types";
-import { ExpandMore } from "@mui/icons-material";
+import { ErrorOutline, ExpandMore } from "@mui/icons-material";
 import {
   Paper,
   Table,
@@ -13,10 +13,12 @@ import {
   Collapse,
   Typography,
   IconButton,
+  Tooltip,
   TableSortLabel,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "./UserContext";
 
 interface ResultsTableProps {
   articles: Article[];
@@ -33,6 +35,7 @@ const ResultsTable = ({
   statusColumn,
   modifyButton,
 }: ResultsTableProps) => {
+  const { user } = useUser();
   const [sortedArticles, setSortedArticles] = useState<Article[]>(articles);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortedOrder, setSortedOrder] = useState<"asc" | "desc">("asc");
@@ -73,21 +76,44 @@ const ResultsTable = ({
     setExpandedArticleUid((prevUid) => (prevUid === uid ? null : uid));
   };
 
+  // Function to render the details of the article
+  const renderDetail = (label: string, value?: string) => {
+    if (!value) {
+      return null;
+    }
+    return (
+      <Typography variant="body1" gutterBottom>
+        <strong>{label}:</strong> {value}
+      </Typography>
+    );
+  };
+
   const sortColumn = async (column: string) => {
-    let state = "asc"
+    let state = "asc";
     if (sortedColumn === column) {
       state = sortedOrder === "asc" ? "desc" : "asc";
       setSortedOrder(sortedOrder === "asc" ? "desc" : "asc");
-       
     } else {
       setSortedColumn(column);
       setSortedOrder("asc");
     }
     const sortedArticles = articles.sort((a, b) => {
       if (state === "asc") {
-        return a[column as keyof Article]?.toString().localeCompare(b[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
+        return a[column as keyof Article]
+          ?.toString()
+          .localeCompare(
+            b[column as keyof Article]?.toString() || "",
+            undefined,
+            { numeric: true }
+          ) as number;
       } else {
-        return b[column as keyof Article]?.toString().localeCompare(a[column as keyof Article]?.toString() || "", undefined, { numeric: true }) as number;
+        return b[column as keyof Article]
+          ?.toString()
+          .localeCompare(
+            a[column as keyof Article]?.toString() || "",
+            undefined,
+            { numeric: true }
+          ) as number;
       }
     });
     setSortedArticles(sortedArticles);
@@ -98,11 +124,53 @@ const ResultsTable = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "title"} onClick={() => sortColumn("title")}>Title</TableSortLabel></TableCell>
-            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "doi"} onClick={() => sortColumn("doi")}>DOI</TableSortLabel></TableCell>
-            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "journalName"} onClick={() => sortColumn("journalName")}>Journal Name</TableSortLabel></TableCell>
-            <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "yearOfPub"} onClick={() => sortColumn("yearOfPub")}>Year of Publication</TableSortLabel></TableCell>
-            {statusColumn && <TableCell align="center"><TableSortLabel direction={sortedOrder} active={sortedColumn == "status"} onClick={() => sortColumn("status")}>Status</TableSortLabel></TableCell>}
+            <TableCell align="center">
+              <TableSortLabel
+                direction={sortedOrder}
+                active={sortedColumn == "title"}
+                onClick={() => sortColumn("title")}
+              >
+                Title
+              </TableSortLabel>
+            </TableCell>
+            <TableCell align="center">
+              <TableSortLabel
+                direction={sortedOrder}
+                active={sortedColumn == "doi"}
+                onClick={() => sortColumn("doi")}
+              >
+                DOI
+              </TableSortLabel>
+            </TableCell>
+            <TableCell align="center">
+              <TableSortLabel
+                direction={sortedOrder}
+                active={sortedColumn == "journalName"}
+                onClick={() => sortColumn("journalName")}
+              >
+                Journal Name
+              </TableSortLabel>
+            </TableCell>
+            <TableCell align="center">
+              <TableSortLabel
+                direction={sortedOrder}
+                active={sortedColumn == "yearOfPub"}
+                onClick={() => sortColumn("yearOfPub")}
+              >
+                Year of Publication
+              </TableSortLabel>
+            </TableCell>
+            {statusColumn && (
+              <TableCell align="center">
+                <TableSortLabel
+                  direction={sortedOrder}
+                  active={sortedColumn == "status"}
+                  onClick={() => sortColumn("status")}
+                >
+                  Status
+                </TableSortLabel>
+              </TableCell>
+            )}
             <TableCell align="center">Details</TableCell>
             {buttonLabel && <TableCell align="center">Actions</TableCell>}
           </TableRow>
@@ -124,16 +192,26 @@ const ResultsTable = ({
                   </TableCell>
                   {statusColumn && (
                     <TableCell align="center">
-                      {getArticleStatus(article.status)}
-                      {statusColumn && modifyButton ? (
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => handleModify(article.uid || "")}
-                          sx={{ m: 0.5 }}>
-                          Modify
-                        </Button>
-                      ) : null}
+                      <Box display="flex" alignItems="center">
+                        {article.modNote && (
+                          <Tooltip title={article.modNote}>
+                            <IconButton size="small">
+                              <ErrorOutline color="warning" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                        {getArticleStatus(article.status)}
+                        {statusColumn && modifyButton ? (
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleModify(article.uid || "")}
+                            sx={{ m: 0.5 }}
+                          >
+                            Modify
+                          </Button>
+                        ) : null}
+                      </Box>
                     </TableCell>
                   )}
                   {/*Button for Article Details */}
@@ -150,6 +228,11 @@ const ResultsTable = ({
                       <Button
                         variant="contained"
                         color="primary"
+                        disabled={
+                          article.status.toUpperCase() !== "NEW" &&
+                          user?.role !== "Moderator" &&
+                          user?.role !== "Analyst"
+                        }
                         onClick={() => onClick && onClick(article.uid || "")}
                       >
                         {buttonLabel}
@@ -171,24 +254,13 @@ const ResultsTable = ({
                         <Typography variant="h6" gutterBottom component="div">
                           Article Details
                         </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>SEP:</strong> {article.SEP}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Authors:</strong> {article.authors}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Pages:</strong> {article.pages}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Volume:</strong> {article.vol}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Claim:</strong> {article.claim}
-                        </Typography>
-                        <Typography variant="body1" gutterBottom>
-                          <strong>Result:</strong> {article.result}
-                        </Typography>
+                        {renderDetail("Moderation Note", article.modNote || "")}
+                        {renderDetail("SEP", article.SEP)}
+                        {renderDetail("Authors", article.authors)}
+                        {renderDetail("Pages", article.pages)}
+                        {renderDetail("Volume", article.vol)}
+                        {renderDetail("Claim", article.claim)}
+                        {renderDetail("Result", article.result)}
                       </Box>
                     </Collapse>
                   </TableCell>

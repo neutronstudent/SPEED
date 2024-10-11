@@ -17,6 +17,7 @@ export default function ModerationAnalystForm({
   const router = useRouter();
   const [formData, setFormData] = useState<Article | null>(null);
   const [feedback, setFeedback] = useState<string>("");
+  const [analystNote, setAnalystNote] = useState<string>("");
   const [decision, setDecision] = useState<"reject" | "approve" | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -79,9 +80,38 @@ export default function ModerationAnalystForm({
     setFeedback(event.target.value);
   };
 
+  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAnalystNote(event.target.value);
+  };
+
   // Handle the decision buttons (for Moderator)
   const handleDecision = (decisionType: "reject" | "approve") => {
     setDecision(decisionType);
+  };
+
+  // Allow analysts to save drafts without modifying the status
+  const handleSaveDraft = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${articleUid}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...formData }),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Draft saved successfully");
+        router.push("/moderator-analyst");
+      } else {
+        console.error("Failed to save draft");
+      }
+    } catch (error) {
+      console.error("Failed to save draft", error);
+    }
   };
 
   // Handle form submission (Confirm button)
@@ -102,7 +132,7 @@ export default function ModerationAnalystForm({
         updatedStatus = "APPROVED";
         patchData = {
           ...patchData,
-          reviewNote: feedback,
+          reviewNote: analystNote,
           status: updatedStatus,
         };
       }
@@ -239,21 +269,23 @@ export default function ModerationAnalystForm({
             onChange={handleChange}
           />
           <Divider />
-          {user?.role === "Analyst" && (
+          {/* {user?.role === "Moderator" && ( */}
             <TextField
-              label="Feedback"
-              value={feedback}
-              onChange={handleFeedbackChange}
+              label="Moderator Feedback"
+              name="modNote"
+              value={formData.modNote}
+              onChange={handleChange}
               fullWidth
               multiline
               rows={4}
             />
-          )}
-          {user?.role === "Moderator" && (
+          {/* )} */}
+          {user?.role === "Analyst" && (
             <TextField
-              label="Feedback"
-              value={feedback}
-              onChange={handleFeedbackChange}
+              label="Analysis Notes"
+              name="reviewNote"
+              value={formData.reviewNote}
+              onChange={handleChange}
               fullWidth
               multiline
               rows={4}
@@ -279,6 +311,11 @@ export default function ModerationAnalystForm({
               </Button>
             </Box>
           ) : null}
+          {user?.role === "Analyst" && (
+            <Button variant="contained" onClick={handleSaveDraft}>
+              Save Draft
+            </Button>
+          )}
           <Button
             variant="contained"
             color="success"
