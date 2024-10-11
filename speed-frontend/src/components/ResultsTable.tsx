@@ -22,16 +22,13 @@ import { useUser } from "./UserContext";
 
 interface ResultsTableProps {
   articles: Article[];
-  onClick?: (uid: string) => void;
-  buttonLabel?: string;
+  actionButton?: (article: Article) => React.ReactNode;
   statusColumn?: boolean;
   modifyButton?: boolean;
 }
-
 const ResultsTable = ({
   articles,
-  onClick,
-  buttonLabel,
+  actionButton,
   statusColumn,
   modifyButton,
 }: ResultsTableProps) => {
@@ -67,7 +64,7 @@ const ResultsTable = ({
     if (statusColumn) {
       setNumberColumns(numberColumns + 1);
     }
-    if (buttonLabel) {
+    if (actionButton) {
       setNumberColumns(numberColumns + 1);
     }
   }, []);
@@ -172,7 +169,7 @@ const ResultsTable = ({
               </TableCell>
             )}
             <TableCell align="center">Details</TableCell>
-            {buttonLabel && <TableCell align="center">Actions</TableCell>}
+            {actionButton && <TableCell align="center">Actions</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -201,16 +198,6 @@ const ResultsTable = ({
                           </Tooltip>
                         )}
                         {getArticleStatus(article.status)}
-                        {statusColumn && modifyButton ? (
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            onClick={() => handleModify(article.uid || "")}
-                            sx={{ m: 0.5 }}
-                          >
-                            Modify
-                          </Button>
-                        ) : null}
                       </Box>
                     </TableCell>
                   )}
@@ -223,20 +210,9 @@ const ResultsTable = ({
                     </IconButton>
                   </TableCell>
                   {/* Button for Edit, Moderate, or Analyse */}
-                  {buttonLabel && (
+                  {actionButton && (
                     <TableCell align="center">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        disabled={
-                          article.status.toUpperCase() !== "NEW" &&
-                          user?.role !== "Moderator" &&
-                          user?.role !== "Analyst"
-                        }
-                        onClick={() => onClick && onClick(article.uid || "")}
-                      >
-                        {buttonLabel}
-                      </Button>
+                      {actionButton(article)}
                     </TableCell>
                   )}
                 </TableRow>

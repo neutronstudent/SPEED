@@ -5,6 +5,7 @@ import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
 import { useRouter } from "next/navigation";
 import EditArticleButton from "@/components/EditArticleButton";
+import { Article } from "@/types";
 
 const MySubmissionPage: React.FC = () => {
   const { user } = useUser();
@@ -51,8 +52,8 @@ const MySubmissionPage: React.FC = () => {
     router.push(`/submit?uid=${uid}`);
   };
 
-  const editButton = (uid: string) => {
-    return <EditArticleButton articleId={uid} />;
+  const editButton = (article: Article) => {
+    return <EditArticleButton articleId={article.uid || ""} />;
   };
 
   return (
@@ -79,8 +80,7 @@ const MySubmissionPage: React.FC = () => {
         statusColumn={true}
         modifyButton={false}
         articles={searchResults}
-        buttonLabel="Edit"
-        onClick={handleEdit}
+        actionButton={editButton}
       />
     </Box>
   );
