@@ -10,6 +10,29 @@ import { randomUUID } from 'crypto';
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  @Get('/search-by-doi')
+  async findByDOI(@Query('doi') doi: string) {
+    if (!doi) {
+      throw new HttpException('DOI is required', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const article = await this.articleService.findByDOI(doi);
+      if (article) {
+        console.log('Article found in controller:', article);
+      // Manually stringify and parse to ensure serialization
+        const serializedArticle = JSON.parse(JSON.stringify(article));
+        return serializedArticle;
+      } else {
+        console.log('No article found with this DOI');
+        throw new HttpException('No article found with this DOI', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      console.error('Error searching for DOI:', error);
+      throw new HttpException('Error searching for DOI', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get('/')
   async findMatching(@Query() params: any) {
     try {
@@ -33,7 +56,9 @@ export class ArticleController {
   @Get('/:uid')
   async findOne(@Param('uid') uid: string) {
     try {
-      return this.articleService.findOne(uid);
+      const article = await this.articleService.findOne(uid);
+      console.log('Article retrieved from database:', article);
+      return article;
     } catch {
       throw new HttpException(
         {
