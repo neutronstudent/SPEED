@@ -71,10 +71,10 @@ export default function ModerationAnalystForm({
     }
   };
 
-  // Handle feedback input change
+  /*
   const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFeedback(event.target.value);
-  };
+  };*/
 
   const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAnalystNote(event.target.value);
@@ -143,12 +143,11 @@ export default function ModerationAnalystForm({
 
       if (user?.role === "Moderator") {
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
-        patchData = { ...patchData, modNote: feedback, status: updatedStatus };
+        patchData = { ...patchData, status: updatedStatus };
       } else if (user?.role === "Analyst") {
         updatedStatus = "APPROVED";
         patchData = {
-          ...patchData,
-          reviewNote: analystNote,
+          ...formData,
           status: updatedStatus,
         };
       }
@@ -246,21 +245,21 @@ export default function ModerationAnalystForm({
           <TextField
             label="Volume"
             name="vol"
-            value={formData.vol || "N/A"}
+            value={formData.vol || ""}
             fullWidth
             onChange={handleChange}
           />
           <TextField
             label="Pages"
             name="pages"
-            value={formData.pages || "N/A"}
+            value={formData.pages || ""}
             fullWidth
             onChange={handleChange}
           />
           <TextField
             label="DOI"
             name="doi"
-            value={formData.doi || "N/A"}
+            value={formData.doi || ""}
             fullWidth
             onChange={handleChange}
           />

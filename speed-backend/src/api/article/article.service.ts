@@ -33,6 +33,15 @@ export class ArticleService {
     return await this.articleModel.findOne({uid}).exec();
   }
     
+  async findByDOI(doi: string): Promise<Article | null> {
+    console.log("Searching for DOI:", doi);
+    const article = await this.articleModel
+      .findOne({ doi: { $regex: new RegExp(`^${doi}$`, 'i') } })
+      .lean<Article>()
+      .exec();
+    console.log("Article found:", article);
+    return article;
+  }
 
   async searchArticles(searchStr: string, statuses: ArticleState[]): Promise<Article[]> {
       const query: any = {};

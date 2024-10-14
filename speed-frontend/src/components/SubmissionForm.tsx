@@ -31,6 +31,7 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     status: "",
   });
   const [tempYear, setTempYear] = useState("");
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
   // function to fetch article data
   const fetchArticle = async (uid: string) => {
@@ -96,6 +97,39 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     });
   };
 
+   // Function to check if the DOI already exists
+   const checkDOIExists = async () => {
+    if (!formData.doi) return false;
+  
+    try {
+      console.log("Checking DOI:", formData.doi);
+      const response = await fetch(`${backendUrl}/api/articles/search-by-doi?doi=${encodeURIComponent(formData.doi)}`);
+  
+      if (response.status === 404) {
+        console.log("No article found for this DOI");
+        return null;
+      }
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from server:", errorText);
+        throw new Error(`Failed to check DOI: ${response.statusText}`);
+      }
+  
+      const textData = await response.text();
+      console.log("Raw response data:", textData);
+  
+      const data = textData ? JSON.parse(textData) : null;
+      console.log("DOI check response:", data);
+  
+      return data;
+    } catch (error) {
+      console.error("Error checking DOI:", error);
+      setError("Failed to check DOI. Please try again later.");
+      return null;
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -115,6 +149,21 @@ export default function SubmissionForm({ article }: SubmissionFormProps) {
     if(tempYear < "1700" || tempYear > new Date().getFullYear().toString()) {
       setError("Year of publication must be between 1000 and current year");
       return;
+    }
+
+    const existingArticle = await checkDOIExists();
+    console.log("Existing Article:", existingArticle);
+    if (existingArticle && existingArticle.uid !== formData.uid) {
+      let message = "";
+      if (existingArticle.status === "APPROVED") {
+        message = "An article with this DOI is already approved.";
+      } else if (existingArticle.status === "DENIED") {
+        message = `This article was rejected for the following reason: ${existingArticle.modNote}`;
+      } else {
+        message = "An article with this DOI is already in progress.";
+      }
+      alert(message);
+      return; 
     }
 
     const updatedFormData = {
