@@ -53,7 +53,7 @@ const MySubmissionPage: React.FC = () => {
   };
 
   const editButton = (article: Article) => {
-    return <EditArticleButton articleId={article.uid || ""} />;
+    return <EditArticleButton disabled={!(article.status.toUpperCase() === "NEW")} articleId={article.uid || ""} />;
   };
 
   return (

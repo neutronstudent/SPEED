@@ -4,9 +4,10 @@ import { useRouter } from "next/navigation";
 
 interface EditArticleButtonProps {
   articleId: string;
+  disabled?: boolean;
 }
 
-const EditArticleButton: React.FC<EditArticleButtonProps> = ({ articleId }) => {
+const EditArticleButton: React.FC<EditArticleButtonProps> = ({ articleId, disabled }) => {
   const router = useRouter();
   const handleEdit = (uid: string) => {
     // Redirect to edit page
@@ -20,6 +21,7 @@ const EditArticleButton: React.FC<EditArticleButtonProps> = ({ articleId }) => {
         variant="contained"
         color="primary"
         onClick={() => handleEdit(articleId)}
+        disabled={disabled}
       >
         Edit
       </Button>
