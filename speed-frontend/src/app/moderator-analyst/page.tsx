@@ -61,11 +61,11 @@ const ModerationAnalystPage: React.FC = () => {
     }
   }, [user, fetchArticles]);
 
-  // React node Action button depending on the role
+  // React node Action buttons depending on the role
   const actionButton = (article: Article) => {
-    if (user?.role === "Moderator") {
-      if (article.status === "DENIED" || article.status === "APPROVED") {
-        return (
+    return (
+      <Box>
+        {(article.status === "DENIED" || article.status === "APPROVED") && (
           <Button
             variant="outlined"
             size="small"
@@ -74,44 +74,31 @@ const ModerationAnalystPage: React.FC = () => {
           >
             Modify
           </Button>
-        );
-      }
-      return (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            router.push(`/moderation?uid=${article.uid}`);
-          }}
-        >
-          Moderate
-        </Button>
-      );
-    } else if (user?.role === "Analyst") {
-      if (article.status === "DENIED" || article.status === "APPROVED") {
-        return (
+        )}
+        {user?.role === "Moderator" && (
           <Button
-            variant="outlined"
-            size="small"
-            onClick={() => router.push(`/modify-status?uid=${article.uid}`)}
-            sx={{ m: 0.5 }}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              router.push(`/moderation?uid=${article.uid}`);
+            }}
           >
-            Modify
+            Moderate
           </Button>
-        );
-      }
-      return (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            router.push(`/analysis?uid=${article.uid}`);
-          }}
-        >
-          Analyse
-        </Button>
-      );
-    }
+        )}
+        {user?.role === "Analyst" && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              router.push(`/analysis?uid=${article.uid}`);
+            }}
+          >
+            Analyse
+          </Button>
+        )}
+      </Box>
+    );
   };
 
   return (

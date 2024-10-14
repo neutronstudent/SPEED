@@ -1,6 +1,6 @@
 "use client";
 import { Article } from "@/types";
-import { TextField, Button, Divider, Box } from "@mui/material";
+import { TextField, Button, Divider, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 import { useRouter } from "next/navigation";
@@ -17,9 +17,11 @@ export default function ModerationAnalystForm({
   const router = useRouter();
   const [formData, setFormData] = useState<Article | null>(null);
   const [feedback, setFeedback] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const [analystNote, setAnalystNote] = useState<string>("");
   const [decision, setDecision] = useState<"reject" | "approve" | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [tempYear, setTempYear] = useState<string>("");
 
   // Function to fetch article data
   const fetchArticle = async (uid: string) => {
@@ -33,6 +35,7 @@ export default function ModerationAnalystForm({
         console.log("Fetched article data:", data);
         data.yearOfPub = new Date(data.yearOfPub);
         setFormData(data as Article);
+        setTempYear(data.yearOfPub.getFullYear().toString());
       } else {
         console.error("Failed to fetch article data");
       }
@@ -55,14 +58,7 @@ export default function ModerationAnalystForm({
 
     // Special handling for yearOfPub to convert it to a Date
     if (name === "yearOfPub") {
-      setFormData((prevData) =>
-        prevData
-          ? {
-              ...prevData,
-              [name]: new Date(value),
-            }
-          : null
-      );
+      setTempYear(value);
     } else {
       setFormData((prevData) =>
         prevData
@@ -116,14 +112,34 @@ export default function ModerationAnalystForm({
 
   // Handle form submission (Confirm button)
   const handleConfirm = async () => {
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
+
     if (user?.role === "Moderator" && !decision) {
       alert("Please select a decision (Reject or Approve) before confirming.");
       return;
     }
 
+    if (decision !== "reject") {
+      if (tempYear.length !== 4) {
+        setError("Year of publication must be 4 digits long");
+        return;
+      }
+      if (tempYear.match(/[^0-9]/)) {
+        setError("Year of publication must be a number");
+        return;
+      }
+      if (tempYear < "1700" || tempYear > new Date().getFullYear().toString()) {
+        setError("Year of publication must be between 1000 and current year");
+        return;
+      }
+    }
+
     try {
       let updatedStatus = "";
-      let patchData: any = { ...formData };
+      let patchData: any = { ...formData, yearOfPub: new Date(tempYear) };
 
       if (user?.role === "Moderator") {
         updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
@@ -197,6 +213,8 @@ export default function ModerationAnalystForm({
             width: "100%",
           }}
         >
+          {/* Error Message */}
+          {error && <Typography color="error">{error}</Typography>}
           <TextField
             label="Submission Title"
             name="title"
@@ -221,7 +239,7 @@ export default function ModerationAnalystForm({
           <TextField
             label="Year of Publication"
             name="yearOfPub"
-            value={formData.yearOfPub.getFullYear()}
+            value={tempYear}
             fullWidth
             onChange={handleChange}
           />
@@ -270,15 +288,15 @@ export default function ModerationAnalystForm({
           />
           <Divider />
           {/* {user?.role === "Moderator" && ( */}
-            <TextField
-              label="Moderator Feedback"
-              name="modNote"
-              value={formData.modNote}
-              onChange={handleChange}
-              fullWidth
-              multiline
-              rows={4}
-            />
+          <TextField
+            label="Moderator Feedback"
+            name="modNote"
+            value={formData.modNote}
+            onChange={handleChange}
+            fullWidth
+            multiline
+            rows={4}
+          />
           {/* )} */}
           {user?.role === "Analyst" && (
             <TextField
