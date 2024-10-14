@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import ResultsTable from "./ResultsTable";
 import { useUser } from "./UserContext"; // Assuming you have a UserContext to get user role
 import { Article } from "@/types";
 import { useRouter } from "next/navigation";
+
 
 const drawerWidth = 0; // Space reserved for the sidenav
 
@@ -72,11 +74,6 @@ const SearchPage: React.FC = () => {
         const data = await response.json();
         setSearchResults(data);
       }
-    } catch (err) {
-      setError("No articles found or server error");
-    } finally {
-      setLoading(false);
-    }
   };
 
   // Fetch default approved articles when the component mounts
