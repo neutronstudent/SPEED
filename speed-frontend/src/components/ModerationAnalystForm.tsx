@@ -1,12 +1,13 @@
 "use client";
 import { Article } from "@/types";
-import { TextField, Button, Divider, Box } from "@mui/material";
+import { TextField, Button, Divider, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 import { useRouter } from "next/navigation";
+import GoogleScholarParser from "./GoogleScholarParser";
 
 interface ModerationAnalystFormProps {
-  articleUid?: string;
+  articleUid: string;
 }
 
 export default function ModerationAnalystForm({
@@ -16,21 +17,25 @@ export default function ModerationAnalystForm({
   const router = useRouter();
   const [formData, setFormData] = useState<Article | null>(null);
   const [feedback, setFeedback] = useState<string>("");
-  //const [analysis, setAnalysis] = useState<string>(""); < for the analysts' note
+  const [error, setError] = useState<string | null>(null);
+  const [analystNote, setAnalystNote] = useState<string>("");
   const [decision, setDecision] = useState<"reject" | "approve" | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [tempYear, setTempYear] = useState<string>("");
 
   // Function to fetch article data
   const fetchArticle = async (uid: string) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${uid}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${uid}`
       );
       if (response.ok) {
-        const data = await response.json();
+        let data = await response.json();
         console.log("Fetched article data:", data);
+        data.yearOfPub = new Date(data.yearOfPub);
         setFormData(data as Article);
+        setTempYear(data.yearOfPub.getFullYear().toString());
       } else {
         console.error("Failed to fetch article data");
       }
@@ -48,50 +53,115 @@ export default function ModerationAnalystForm({
     }
   }, [articleUid]);
 
-  // Handle feedback input change
-  const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFeedback(event.target.value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    // Special handling for yearOfPub to convert it to a Date
+    if (name === "yearOfPub") {
+      setTempYear(value);
+    } else {
+      setFormData((prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              [name]: value,
+            }
+          : null
+      );
+    }
   };
 
   /*
-  const handleAnalysisChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAnalysis(event.target.value);
+  const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFeedback(event.target.value);
   };*/
+
+  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAnalystNote(event.target.value);
+  };
 
   // Handle the decision buttons (for Moderator)
   const handleDecision = (decisionType: "reject" | "approve") => {
     setDecision(decisionType);
   };
 
-  // Handle form submission (Confirm button)
-  const handleConfirm = async () => {
-    if (user?.role === "Moderator" && !decision) {
-      alert("Please select a decision (Reject or Approve) before confirming.");
-      return;
-    }
-
+  // Allow analysts to save drafts without modifying the status
+  const handleSaveDraft = async () => {
     try {
-      let updatedStatus = "";
-      let patchData: any = {};
-
-      if (user?.role === "Moderator") {
-        updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
-        patchData = { modNote: feedback, status: updatedStatus }; 
-      } /*else if (user?.role === "Analyst") {
-        updatedStatus = "APPROVED"; 
-        patchData = { reviewNote: analysis, status: updatedStatus };
-      }*/
-
-      console.log("Sending PATCH request with data:", patchData);
-
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/id/${articleUid}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${articleUid}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(patchData), 
+          body: JSON.stringify({ ...formData }),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Draft saved successfully");
+        router.push("/moderator-analyst");
+      } else {
+        console.error("Failed to save draft");
+      }
+    } catch (error) {
+      console.error("Failed to save draft", error);
+    }
+  };
+
+  // Handle form submission (Confirm button)
+  const handleConfirm = async () => {
+    if (!user) {
+      console.error("User not logged in");
+      return;
+    }
+
+    if (user?.role === "Moderator" && !decision) {
+      alert("Please select a decision (Reject or Approve) before confirming.");
+      return;
+    }
+
+    if (decision !== "reject") {
+      if (tempYear.length !== 4) {
+        setError("Year of publication must be 4 digits long");
+        return;
+      }
+      if (tempYear.match(/[^0-9]/)) {
+        setError("Year of publication must be a number");
+        return;
+      }
+      if (tempYear < "1700" || tempYear > new Date().getFullYear().toString()) {
+        setError("Year of publication must be between 1000 and current year");
+        return;
+      }
+    }
+
+    try {
+      let updatedStatus = "";
+      let patchData: any = { ...formData, yearOfPub: new Date(tempYear) };
+
+      if (user?.role === "Moderator") {
+        updatedStatus = decision === "approve" ? "MODERATED" : "DENIED";
+        patchData = { ...patchData, status: updatedStatus };
+      } else if (user?.role === "Analyst") {
+        updatedStatus = "APPROVED";
+        patchData = {
+          ...formData,
+          status: updatedStatus,
+        };
+      }
+
+      console.log("Sending PATCH request with data:", patchData);
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${articleUid}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(patchData),
         }
       );
 
@@ -142,87 +212,106 @@ export default function ModerationAnalystForm({
             width: "100%",
           }}
         >
+          {/* Error Message */}
+          {error && <Typography color="error">{error}</Typography>}
           <TextField
             label="Submission Title"
+            name="title"
             value={formData.title}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Authors"
+            name="authors"
             value={formData.authors}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Journal Name"
+            name="journalName"
             value={formData.journalName}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Year of Publication"
-            value={formData.yearOfPub.toString()}
+            name="yearOfPub"
+            value={tempYear}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Volume"
-            value={formData.vol || "N/A"}
+            name="vol"
+            value={formData.vol || ""}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="Pages"
-            value={formData.pages || "N/A"}
+            name="pages"
+            value={formData.pages || ""}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <TextField
             label="DOI"
-            value={formData.doi || "N/A"}
+            name="doi"
+            value={formData.doi || ""}
             fullWidth
-            InputProps={{
-              readOnly: true,
-            }}
+            onChange={handleChange}
           />
           <Divider />
-          {user?.role === "Analyst" && (
           <TextField
-            label="Moderator's Feedback"
-            value={formData.modNote || "No feedback from moderator"}
+            label="Software Engineering Practice"
+            name="SEP"
+            value={formData.SEP}
             fullWidth
-            InputProps={{ readOnly: true }}
+            onChange={handleChange}
           />
-        )}
-          {/* Feedback or Analysis TextField */}
-          {user?.role === "Moderator" && (
           <TextField
-          label= "Feedback" //{user?.role === "Moderator" ? "Feedback" : "Analysis"}
-          value= {feedback}//{user?.role === "Moderator" ? feedback : analysis}
-          onChange= {handleFeedbackChange}//{user?.role === "Moderator" ? handleFeedbackChange : handleAnalysisChange}
-          fullWidth
-          multiline
-          rows={4}
-        />
+            label="Claim"
+            name="claim"
+            value={formData.claim}
+            fullWidth
+            onChange={handleChange}
+          />
+          <TextField
+            label="Evidence Result"
+            name="result"
+            value={formData.result}
+            fullWidth
+            onChange={handleChange}
+          />
+          <Divider />
+          {/* {user?.role === "Moderator" && ( */}
+          <TextField
+            label="Moderator Feedback"
+            name="modNote"
+            value={formData.modNote}
+            onChange={handleChange}
+            fullWidth
+            multiline
+            rows={4}
+          />
+          {/* )} */}
+          {user?.role === "Analyst" && (
+            <TextField
+              label="Analysis Notes"
+              name="reviewNote"
+              value={formData.reviewNote}
+              onChange={handleChange}
+              fullWidth
+              multiline
+              rows={4}
+            />
           )}
-        <Divider />
-
+          <Divider />
+          <GoogleScholarParser article={formData} />
           {user?.role === "Moderator" ? (
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-              {/* Decision Buttons for Moderator */}
               <Button
                 variant={decision === "reject" ? "contained" : "outlined"}
                 color="error"
@@ -239,8 +328,11 @@ export default function ModerationAnalystForm({
               </Button>
             </Box>
           ) : null}
-
-          {/* Confirm Button */}
+          {user?.role === "Analyst" && (
+            <Button variant="contained" onClick={handleSaveDraft}>
+              Save Draft
+            </Button>
+          )}
           <Button
             variant="contained"
             color="success"

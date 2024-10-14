@@ -5,6 +5,7 @@ import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
 import { useRouter } from "next/navigation";
 import EditArticleButton from "@/components/EditArticleButton";
+import { Article } from "@/types";
 
 const MySubmissionPage: React.FC = () => {
   const { user } = useUser();
@@ -23,7 +24,7 @@ const MySubmissionPage: React.FC = () => {
 
     try {
       //   const apiUrl = `${backendUrl}/api/articles`;
-      const apiUrl = `${backendUrl}/api/articles/submitter/${user?.uid || ""}`;
+      const apiUrl = `${backendUrl}/api/articles?submitter=${user?.uid || ""}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -51,8 +52,8 @@ const MySubmissionPage: React.FC = () => {
     router.push(`/submit?uid=${uid}`);
   };
 
-  const editButton = (uid: string) => {
-    return <EditArticleButton articleId={uid} />;
+  const editButton = (article: Article) => {
+    return <EditArticleButton disabled={!(article.status.toUpperCase() === "NEW")} articleId={article.uid || ""} />;
   };
 
   return (
@@ -76,10 +77,10 @@ const MySubmissionPage: React.FC = () => {
 
       {/* Table with Search Results */}
       <ResultsTable
-        statusColomn={true}
+        statusColumn={true}
+        modifyButton={false}
         articles={searchResults}
-        buttonLabel="Edit"
-        onClick={handleEdit}
+        actionButton={editButton}
       />
     </Box>
   );
