@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import ResultsTable from "@/components/ResultsTable";
 import { useUser } from "@/components/UserContext";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ const ModerationAnalystPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showDenied, setShowDenied] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
@@ -91,6 +92,20 @@ const ModerationAnalystPage: React.FC = () => {
     );
   };
 
+  // Filter results based on search query locally
+  const searchWithQuery = async () => {
+    setLoading(true);
+    setError(null);
+
+    // search and filter articles from the fetched articles
+    const filteredArticles = articles.filter((article) => {
+      return article.title.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
+    setArticles(filteredArticles);
+    setLoading(false);
+  };
+
   return (
     <Box
       component="main"
@@ -104,6 +119,26 @@ const ModerationAnalystPage: React.FC = () => {
         {user?.role === "Moderator" ? "Moderation" : "Analysis"} Page
       </Typography>
 
+      {/* Search Input and Button */}
+      <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+        <TextField
+          label="Search"
+          variant="outlined"
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={searchWithQuery} // Search with query
+          sx={{ ml: 2, height: "56px" }}
+          disabled={loading}
+        >
+          Search
+        </Button>
+      </Box>
+
       <Box>
         <Button
           variant="contained"
@@ -113,6 +148,7 @@ const ModerationAnalystPage: React.FC = () => {
           }}
           onClick={() => {
             setShowDenied(false);
+            setSearchQuery("");
           }}
         >
           Show {user?.role === "Moderator" ? "New" : "Moderated"}
@@ -125,6 +161,7 @@ const ModerationAnalystPage: React.FC = () => {
           }}
           onClick={() => {
             setShowDenied(true);
+            setSearchQuery("");
           }}
         >
           Show Denied
