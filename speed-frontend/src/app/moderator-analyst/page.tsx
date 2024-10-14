@@ -65,16 +65,6 @@ const ModerationAnalystPage: React.FC = () => {
   const actionButton = (article: Article) => {
     return (
       <Box>
-        {(article.status === "DENIED" || article.status === "APPROVED") && (
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => router.push(`/modify-status?uid=${article.uid}`)}
-            sx={{ m: 0.5 }}
-          >
-            Modify
-          </Button>
-        )}
         {user?.role === "Moderator" && (
           <Button
             variant="contained"
