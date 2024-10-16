@@ -43,6 +43,11 @@ const SearchPage: React.FC = () => {
     setLoading(true);
     setError(null);
 
+    if (!searchQuery) {
+      setLoading(false);
+      return;
+    }
+
     try {
       let apiUrl = `${backendUrl}/api/articles?text=${encodeURIComponent(
         searchQuery
@@ -117,24 +122,34 @@ const SearchPage: React.FC = () => {
       </Typography>
 
       {/* Search Input and Button */}
-      <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
-        <TextField
-          label="Search"
-          variant="outlined"
-          fullWidth
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSearch} // Search with query
-          sx={{ ml: 2, height: "56px" }}
-          disabled={loading}
-        >
-          Search
-        </Button>
-      </Box>
+      <form id="search" onSubmit={handleSearch}>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+          <TextField
+            label="Search"
+            variant="outlined"
+            fullWidth
+            value={searchQuery}
+            onChange={(e) => {
+              if (e.target.value.length > 0) {
+                setSearchQuery(e.target.value);
+              } else {
+                setSearchQuery("");
+                fetchDefaultApprovedArticles();
+              }
+            }}
+          />
+          <Button
+            variant="contained"
+            type="submit"
+            color="primary"
+            onClick={handleSearch} // Search with query
+            sx={{ ml: 2, height: "56px" }}
+            disabled={loading}
+          >
+            Search
+          </Button>
+        </Box>
+      </form>
 
       {/* Show loading state */}
       {loading && <Typography>Loading...</Typography>}
@@ -145,7 +160,11 @@ const SearchPage: React.FC = () => {
       {/* Table with Search Results */}
       <ResultsTable
         articles={searchResults}
-        actionButton={user?.role === "Moderator" || user?.role === "Analyst" ? modifyStatus : undefined}
+        actionButton={
+          user?.role === "Moderator" || user?.role === "Analyst"
+            ? modifyStatus
+            : undefined
+        }
         statusColumn={user?.role === "Moderator" || user?.role === "Analyst"}
       />
     </Box>
