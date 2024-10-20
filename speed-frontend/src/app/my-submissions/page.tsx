@@ -46,12 +46,6 @@ const MySubmissionPage: React.FC = () => {
     }
   }, [user, handleSearch]);
 
-  const handleEdit = (uid: string) => {
-    // Redirect to edit page
-    console.log("Edit article with uid:", uid);
-    router.push(`/submit?uid=${uid}`);
-  };
-
   const editButton = (article: Article) => {
     return <EditArticleButton disabled={!(article.status.toUpperCase() === "NEW")} articleId={article.uid || ""} />;
   };

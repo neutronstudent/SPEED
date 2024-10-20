@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 // import SubmissionForm from "@/components/SubmissionForm";
 import { useSearchParams } from "next/navigation";
 import { Typography } from "@mui/material";

@@ -1,11 +1,12 @@
+import { Box } from '@mui/material';
 import React from 'react';
 
 const AnalysisSuccessPage = () => {
   return (
-    <div>
+    <Box>
       <h1>Analysis Successful</h1>
       <p>The article has been analysed successfully.</p>
-    </div>
+    </Box>
   );
 };
 
