@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogActions,
@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { Article } from "@/types";
 
-// Define the props for the DeleteComponent
+// Defines the props for the DeleteArticle Component
 interface DeleteArticleProps {
   open: boolean;
   article: Article;
@@ -17,6 +17,10 @@ interface DeleteArticleProps {
   onClose: (open: boolean) => void;
 }
 
+/**
+ * DeleteArticle Component that renders a dialog box to confirm deletion of an article
+ * @returns a dialog box that asks the user to confirm deletion of an article
+ */
 const DeleteArticle: React.FC<DeleteArticleProps> = ({
   open,
   article,

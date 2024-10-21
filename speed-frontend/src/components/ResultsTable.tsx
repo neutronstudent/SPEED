@@ -8,7 +8,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   Box,
   Collapse,
   Typography,
@@ -16,7 +15,7 @@ import {
   Tooltip,
   TableSortLabel,
 } from "@mui/material";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "./UserContext";
 
@@ -30,9 +29,7 @@ const ResultsTable = ({
   articles,
   actionButton,
   statusColumn,
-  modifyButton,
 }: ResultsTableProps) => {
-  const { user } = useUser();
   const [sortedArticles, setSortedArticles] = useState<Article[]>(articles);
   const [sortedColumn, setSortedColumn] = useState<string | null>(null);
   const [sortedOrder, setSortedOrder] = useState<"asc" | "desc">("asc");

@@ -16,9 +16,7 @@ export default function ModerationAnalystForm({
   const { user } = useUser();
   const router = useRouter();
   const [formData, setFormData] = useState<Article | null>(null);
-  const [feedback, setFeedback] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [analystNote, setAnalystNote] = useState<string>("");
   const [decision, setDecision] = useState<"reject" | "approve" | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [tempYear, setTempYear] = useState<string>("");
@@ -69,15 +67,6 @@ export default function ModerationAnalystForm({
           : null
       );
     }
-  };
-
-  /*
-  const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFeedback(event.target.value);
-  };*/
-
-  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAnalystNote(event.target.value);
   };
 
   // Handle the decision buttons (for Moderator)
